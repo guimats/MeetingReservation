@@ -59,7 +59,7 @@ public class RegisterUserUseCase : IRegisterUserUseCase
             Name = user.Name,
             Tokens = new ResponseTokensJson
             {
-                AcccessToken = _accessTokenGenerator.Generate(user.UserIdentifier),
+                AcccessToken = _accessTokenGenerator.Generate(user.UserIdentifier, user.Role),
                 RefreshToken = refreshToken
             }
         };

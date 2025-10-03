@@ -1,6 +1,7 @@
 using MeetingReservation.Communication.Requests;
 using MeetingReservation.Communication.Responses;
 using MeetingReservation.Domain.Entities;
+using MeetingReservation.Domain.Enums;
 
 namespace MeetingReservation.Application.Extensions.Mapping;
 
@@ -14,6 +15,16 @@ public static class UserExtension
             Email = request.Email,
             Password = request.Password,
             Role = request.Role
+        };
+    }
+
+    public static ResponseUserProfileJson MapToProfile(this User user)
+    {
+        return new ResponseUserProfileJson
+        {
+            Name = user.Name,
+            Email = user.Email,
+            Role = user.Role.ToString()
         };
     }
 }
