@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.9" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\MeetingReservation.Communication\MeetingReservation.Communication.csproj" />
+    <ProjectReference Include="..\..\Shared\MeetingReservation.Exceptions\MeetingReservation.Exceptions.csproj" />
+    <ProjectReference Include="..\MeetingReservation.Domain\MeetingReservation.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
