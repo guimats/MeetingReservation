@@ -59,7 +59,7 @@ public class RegisterUserUseCase : IRegisterUserUseCase
             Name = user.Name,
             Tokens = new ResponseTokensJson
             {
-                AcccessToken = _accessTokenGenerator.Generate(user.UserIdentifier, user.Role),
+                AccessToken = _accessTokenGenerator.Generate(user.UserIdentifier, user.Role),
                 RefreshToken = refreshToken
             }
         };
@@ -89,7 +89,7 @@ public class RegisterUserUseCase : IRegisterUserUseCase
         var existActiceEmail = await _readRepository.ExistActiveEmail(request.Email);
 
         if (existActiceEmail)
-            result.Errors.Add(new ValidationFailure(string.Empty, ResourceMessagesException.EMPTY_EMAIL));
+            result.Errors.Add(new ValidationFailure(string.Empty, ResourceMessagesException.EMAIL_ALREADY_REGISTERED));
 
         if (!result.IsValid)
         {

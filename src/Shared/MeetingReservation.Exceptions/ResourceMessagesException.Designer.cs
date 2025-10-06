@@ -61,6 +61,33 @@ namespace MeetingReservation.Exceptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The description must be less than 255 characters..
+        /// </summary>
+        public static string DESCRIPTION_TOO_LONGER {
+            get {
+                return ResourceManager.GetString("DESCRIPTION_TOO_LONGER", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email already registered..
+        /// </summary>
+        public static string EMAIL_ALREADY_REGISTERED {
+            get {
+                return ResourceManager.GetString("EMAIL_ALREADY_REGISTERED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E-mail or password invalid..
+        /// </summary>
+        public static string EMAIL_OR_PASSWORD_INVALID {
+            get {
+                return ResourceManager.GetString("EMAIL_OR_PASSWORD_INVALID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to E-mail can&apos;t be empty..
         /// </summary>
         public static string EMPTY_EMAIL {
@@ -79,11 +106,38 @@ namespace MeetingReservation.Exceptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Participants can&apos;t be empty..
+        /// </summary>
+        public static string EMPTY_PARTICIPANTS {
+            get {
+                return ResourceManager.GetString("EMPTY_PARTICIPANTS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password can&apos;t be empty..
         /// </summary>
         public static string EMPTY_PASSWORD {
             get {
                 return ResourceManager.GetString("EMPTY_PASSWORD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have permission to access this resource.
+        /// </summary>
+        public static string FORBIDDEN_ACCESS {
+            get {
+                return ResourceManager.GetString("FORBIDDEN_ACCESS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initial time must be earlier than end time..
+        /// </summary>
+        public static string INITIAL_TIME_MUST_BE_EARLIER {
+            get {
+                return ResourceManager.GetString("INITIAL_TIME_MUST_BE_EARLIER", resourceCulture);
             }
         }
         
@@ -97,11 +151,74 @@ namespace MeetingReservation.Exceptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Authentication token is missing..
+        /// </summary>
+        public static string NO_TOKEN {
+            get {
+                return ResourceManager.GetString("NO_TOKEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password different from the current password.
+        /// </summary>
+        public static string PASSWORD_DIFFERENT_CURRENT_PASSWORD {
+            get {
+                return ResourceManager.GetString("PASSWORD_DIFFERENT_CURRENT_PASSWORD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password must be at least 6 digits long..
         /// </summary>
         public static string PASSWORD_LONGER_THAN_SIX {
             get {
                 return ResourceManager.GetString("PASSWORD_LONGER_THAN_SIX", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reservation not found..
+        /// </summary>
+        public static string RESERVATION_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("RESERVATION_NOT_FOUND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Role is not supported..
+        /// </summary>
+        public static string ROLE_NOT_SUPPORTED {
+            get {
+                return ResourceManager.GetString("ROLE_NOT_SUPPORTED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown error!.
+        /// </summary>
+        public static string UNKNOWN_ERROR {
+            get {
+                return ResourceManager.GetString("UNKNOWN_ERROR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User not found..
+        /// </summary>
+        public static string USER_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("USER_NOT_FOUND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User without permission to access this resource..
+        /// </summary>
+        public static string USER_WITHOUT_PERMISSION_ACCESS_RESOURCE {
+            get {
+                return ResourceManager.GetString("USER_WITHOUT_PERMISSION_ACCESS_RESOURCE", resourceCulture);
             }
         }
     }

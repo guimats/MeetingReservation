@@ -1,7 +1,6 @@
 using MeetingReservation.Communication.Requests;
 using MeetingReservation.Communication.Responses;
 using MeetingReservation.Domain.Entities;
-using MeetingReservation.Domain.Enums;
 
 namespace MeetingReservation.Application.Extensions.Mapping;
 

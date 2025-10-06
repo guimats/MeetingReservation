@@ -1,4 +1,5 @@
 
+using MeetingReservation.API.Filters;
 using MeetingReservation.API.Token;
 using MeetingReservation.Application;
 using MeetingReservation.Domain.Security.Tokens;
@@ -7,86 +8,89 @@ using MeetingReservation.Infrastructure.Extensions;
 using MeetingReservation.Infrastructure.Migrations;
 using Microsoft.OpenApi.Models;
 
-namespace MeetingReservation.API
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddSwaggerGen(options =>
 {
-    public class Program
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
-
-            builder.Services.AddControllers();
-            builder.Services.AddEndpointsApiExplorer();
-
-            builder.Services.AddSwaggerGen(options =>
-            {
-                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Description = @"JWT Authorization header using the Bearer scheme.
+        Description = @"JWT Authorization header using the Bearer scheme.
                         Enter 'Bearer' [space] and then your token in the text input below.
                         Example 'Bearer 12345abcdef'",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
-                });
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
 
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
                 {
+                    new OpenApiSecurityScheme
                     {
-                        new OpenApiSecurityScheme
+                        Reference = new OpenApiReference
                         {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            },
-                            Scheme = "oauth2",
-                            Name = "Bearer",
-                            In = ParameterLocation.Header
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
                         },
-                        new List<string>()
-                    }
-                });
-            });
+                        Scheme = "oauth2",
+                        Name = "Bearer",
+                        In = ParameterLocation.Header
+                    },
+                    new List<string>()
+                }
+    });
+});
 
-            builder.Services.AddApplication(builder.Configuration);
-            builder.Services.AddInfrastructure(builder.Configuration);
-            builder.Services.AddScoped<ITokenProvider, HttpContextTokenValue>();
+// Configurando Filtro que sera utilizado
+builder.Services.AddMvc(options => options.Filters.Add(typeof(ExceptionFilter)));
 
-            builder.Services.AddHttpContextAccessor();
+// adicionando injecoes de dependencia
+builder.Services.AddApplication(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddScoped<ITokenProvider, HttpContextTokenValue>();
 
-            var app = builder.Build();
+//deixando os nomes dos endpoints em minusculo na URL
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
-            
+builder.Services.AddHttpContextAccessor();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+var app = builder.Build();
 
-            app.UseHttpsRedirection();
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-            app.UseAuthorization();
+app.UseHttpsRedirection();
 
-            app.MapControllers();
+app.UseAuthorization();
 
-            MigrateDatabase();
+app.MapControllers();
 
-            app.Run();
+MigrateDatabase();
 
-            void MigrateDatabase()
-            {
-                if (builder.Configuration.IsUnitTestEnviroment())
-                    return;
+app.Run();
 
-                var connectionString = builder.Configuration.ConnectionString();
-                var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
+void MigrateDatabase()
+{
+    if (builder.Configuration.IsUnitTestEnviroment())
+        return;
 
-                DatabaseMigration.Migrate(connectionString, serviceScope.ServiceProvider);
-            }
-        }
-    }
+    var connectionString = builder.Configuration.ConnectionString();
+    var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
+
+    DatabaseMigration.Migrate(connectionString, serviceScope.ServiceProvider);
+}
+
+
+public partial class Program
+{
+    protected Program() { }
 }

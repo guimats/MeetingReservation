@@ -9,6 +9,7 @@ public class MeetingReservationDbContext : DbContext
     public MeetingReservationDbContext(DbContextOptions options) : base(options) { }
 
     public DbSet<User> Users { get; set; }
+    public DbSet<Reservation> Reservations { get; set; }
 
     public DbSet<RefreshToken> RefreshTokens { get; set; }
 
