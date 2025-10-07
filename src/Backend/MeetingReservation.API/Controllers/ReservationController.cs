@@ -1,4 +1,5 @@
 ﻿using MeetingReservation.API.Attributes;
+using MeetingReservation.Application.UseCases.Reservation.Delete;
 using MeetingReservation.Application.UseCases.Reservation.GetById;
 using MeetingReservation.Application.UseCases.Reservation.Register;
 using MeetingReservation.Communication.Requests;
@@ -33,5 +34,16 @@ public class ReservationController : ControllerBase
         var result = await useCase.Execute(id);
 
         return Ok(result);
+    }
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> Delete(
+        [FromServices] IDeleteReservationUseCase useCase,
+        [FromRoute] long id)
+    {
+        await useCase.Execute(id);
+
+        return NoContent();
     }
 }

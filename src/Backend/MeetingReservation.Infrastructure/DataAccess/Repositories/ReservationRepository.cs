@@ -15,6 +15,16 @@ public class ReservationRepository : IReservationWriteOnlyRepository, IReservati
 
     public async Task Add(Reservation reservation) => await _dbContext.Reservations.AddAsync(reservation);
 
+    public async Task Delete(long id)
+    {
+        var reservation = await _dbContext.Reservations.FindAsync(id);
+
+        if (reservation is null)
+            return;
+
+        _dbContext.Reservations.Remove(reservation);
+    }
+
     public async Task<Reservation?> GetById(long id)
     {
         return await _dbContext
