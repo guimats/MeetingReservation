@@ -72,8 +72,9 @@ public static class DependencyInjectionExtension
 
         services.AddScoped<IReservationWriteOnlyRepository, ReservationRepository>();
         services.AddScoped<IReservationReadOnlyRepository, ReservationRepository>();
+        services.AddScoped<IReservationUpdateOnlyRepository, ReservationRepository>();
 
-        services.AddScoped<ILoggedUser, LoggedUser>();
+		services.AddScoped<ILoggedUser, LoggedUser>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
 

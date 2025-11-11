@@ -1,7 +1,9 @@
-﻿using MeetingReservation.API.Attributes;
+﻿using Azure.Core;
+using MeetingReservation.API.Attributes;
 using MeetingReservation.Application.UseCases.Reservation.Delete;
 using MeetingReservation.Application.UseCases.Reservation.GetById;
 using MeetingReservation.Application.UseCases.Reservation.Register;
+using MeetingReservation.Application.UseCases.Reservation.Update;
 using MeetingReservation.Communication.Requests;
 using MeetingReservation.Communication.Responses;
 using Microsoft.AspNetCore.Mvc;
@@ -46,4 +48,16 @@ public class ReservationController : ControllerBase
 
         return NoContent();
     }
+
+	[HttpPut("{id}")]
+	[ProducesResponseType(typeof(ResponseShortReservationJson), StatusCodes.Status200OK)]
+	public async Task<IActionResult> Update(
+		[FromServices] IUpdateReservationUseCase useCase,
+		[FromBody] RequestReservationJson request,
+		[FromRoute] long id)
+	{
+		var result = await useCase.Execute(request, id);
+
+		return Ok(result);
+	}
 }

@@ -17,7 +17,17 @@ public static class UserExtension
         };
     }
 
-    public static ResponseUserProfileJson MapToProfile(this User user)
+	public static User MapToUser(this RequestUpdateUserJson request)
+	{
+		return new User
+		{
+			Name = request.Name,
+			Email = request.Email,
+			Role = request.Role
+		};
+	}
+
+	public static ResponseUserProfileJson MapToProfile(this User user)
     {
         return new ResponseUserProfileJson
         {

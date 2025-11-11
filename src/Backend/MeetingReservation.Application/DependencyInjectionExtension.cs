@@ -2,6 +2,7 @@ using MeetingReservation.Application.UseCases.Login.DoLogin;
 using MeetingReservation.Application.UseCases.Reservation.Delete;
 using MeetingReservation.Application.UseCases.Reservation.GetById;
 using MeetingReservation.Application.UseCases.Reservation.Register;
+using MeetingReservation.Application.UseCases.Reservation.Update;
 using MeetingReservation.Application.UseCases.Token;
 using MeetingReservation.Application.UseCases.User.ChangePassword;
 using MeetingReservation.Application.UseCases.User.Delete;
@@ -37,5 +38,6 @@ public static class DependencyInjectionExtension
         services.AddScoped<IRegisterReservationUseCase, RegisterReservationUseCase>(); 
         services.AddScoped<IGetReservationByIdUseCase, GetReservationByIdUseCase>(); 
         services.AddScoped<IDeleteReservationUseCase, DeleteReservationUseCase>();
-    }
+        services.AddScoped<IUpdateReservationUseCase, UpdateReservationUseCase>();
+	}
 }

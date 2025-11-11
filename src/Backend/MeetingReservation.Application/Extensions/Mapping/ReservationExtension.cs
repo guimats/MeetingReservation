@@ -19,6 +19,17 @@ public static class ReservationExtension
         };
     }
 
+    public static Reservation MapToReservation(this RequestReservationJson request, Reservation reservation)
+    {
+        reservation.Name = request.Name;
+        reservation.Description = request.Description;
+        reservation.InitialTime = request.InitialTime;
+        reservation.EndTime = request.EndTime;
+        reservation.Participants = request.Participants;
+
+        return reservation;
+    }
+
     public static ResponseLongReservationJson MapToLongReservation(this Reservation reservation)
     {
         return new ResponseLongReservationJson

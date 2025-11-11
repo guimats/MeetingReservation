@@ -1,4 +1,5 @@
 using FluentValidation.Results;
+using MeetingReservation.Application.Extensions.Mapping;
 using MeetingReservation.Communication.Requests;
 using MeetingReservation.Domain.Repositories;
 using MeetingReservation.Domain.Repositories.User;
@@ -33,7 +34,12 @@ public class UpdateUserUseCase : IUpdateUserUseCase
 
         var loggedUser = await _loggedUser.User();
 
-    }
+        loggedUser = request.MapToUser();
+
+        _updateRepository.Update(loggedUser);
+
+        await _unitOfWork.Commit();
+	}
 
     private async Task Validate(RequestUpdateUserJson request)
     {

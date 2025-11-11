@@ -1,0 +1,67 @@
+using MeetingReservation.Communication.Requests;
+using MeetingReservation.Communication.Responses;
+using MeetingReservation.Domain.Repositories;
+using MeetingReservation.Domain.Repositories.Reservation;
+using MeetingReservation.Domain.Services.LoggedUser;
+using MeetingReservation.Exceptions;
+using MeetingReservation.Exceptions.ExceptionsBase;
+using MeetingReservation.Application.Extensions.Mapping;
+
+namespace MeetingReservation.Application.UseCases.Reservation.Update;
+
+public class UpdateReservationUseCase : IUpdateReservationUseCase
+{
+	private readonly IReservationUpdateOnlyRepository _updateRepository;
+	private readonly ILoggedUser _loggedUser;
+	private readonly IUnitOfWork _unitOfWork;
+
+	public UpdateReservationUseCase(
+		IReservationUpdateOnlyRepository updateRepository,
+		IReservationReadOnlyRepository readRepository,
+		ILoggedUser loggedUser,
+		IUnitOfWork unitOfWork
+		)
+	{
+		_updateRepository = updateRepository;
+		_loggedUser = loggedUser;
+		_unitOfWork = unitOfWork;
+	}
+
+	public async Task<ResponseShortReservationJson> Execute(RequestReservationJson request, long reservationID)
+	{
+		Validate(request);
+
+		var user = await _loggedUser.User();
+
+		var reservation = await _updateRepository.GetById(reservationID, user.Id);
+
+		if (reservation is null)
+			throw new NotFoundException(ResourceMessagesException.RESERVATION_NOT_FOUND);
+
+		reservation = request.MapToReservation(reservation);
+
+		_updateRepository.Update(reservation);
+
+		await _unitOfWork.Commit();
+
+		return new ResponseShortReservationJson
+		{
+			Id = reservation.Id,
+			Name = reservation.Name
+		};
+	}
+
+	private void Validate(RequestReservationJson request)
+	{
+		var validator = new ReservationValidator();
+
+		var result = validator.Validate(request);
+
+		if (!result.IsValid)
+		{
+			var errorMessages = result.Errors.Select(e => e.ErrorMessage).ToList();
+
+			throw new ErrorOnValidationException(errorMessages);
+		}
+	}
+}

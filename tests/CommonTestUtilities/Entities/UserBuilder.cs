@@ -1,6 +1,7 @@
 using Bogus;
 using CommonTestUtilities.Cryptography;
 using MeetingReservation.Domain.Entities;
+using MeetingReservation.Domain.Enums;
 
 namespace CommonTestUtilities.Entities;
 
@@ -17,6 +18,7 @@ public class UserBuilder
             .RuleFor(user => user.Name, (f) => f.Person.FirstName)
             .RuleFor(user => user.Email, (f, user) => f.Internet.Email(user.Name))
             .RuleFor(user => user.UserIdentifier, () => Guid.NewGuid())
+            .RuleFor(user => user.Role, (f) => f.PickRandom<Role>())
             .RuleFor(user => user.Password, (f) => passwordEncripter.Encrypt(password));
 
         return (user, password);
