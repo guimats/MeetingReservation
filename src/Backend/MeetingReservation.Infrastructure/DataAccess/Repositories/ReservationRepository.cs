@@ -44,4 +44,11 @@ public class ReservationRepository : IReservationWriteOnlyRepository, IReservati
 	{
 		_dbContext.Reservations.Update(reservation);
 	}
+
+	public async Task<bool> IsTimeOccupied(long roomId, DateTime initialTime, DateTime endTime)
+	{
+		return await _dbContext.Reservations
+			.Where(res => res.RoomId == roomId)
+			.AnyAsync(res => initialTime < res.EndTime && endTime > res.InitialTime);
+	}
 }

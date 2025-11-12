@@ -12,24 +12,26 @@ namespace MeetingReservation.Application.UseCases.Reservation.Update;
 public class UpdateReservationUseCase : IUpdateReservationUseCase
 {
 	private readonly IReservationUpdateOnlyRepository _updateRepository;
+	private readonly IReservationWriteOnlyRepository _writeRepository;
 	private readonly ILoggedUser _loggedUser;
 	private readonly IUnitOfWork _unitOfWork;
 
 	public UpdateReservationUseCase(
 		IReservationUpdateOnlyRepository updateRepository,
-		IReservationReadOnlyRepository readRepository,
+		IReservationWriteOnlyRepository writeRepository,
 		ILoggedUser loggedUser,
 		IUnitOfWork unitOfWork
 		)
 	{
 		_updateRepository = updateRepository;
+		_writeRepository = writeRepository;
 		_loggedUser = loggedUser;
 		_unitOfWork = unitOfWork;
 	}
 
 	public async Task<ResponseShortReservationJson> Execute(RequestReservationJson request, long reservationID)
 	{
-		Validate(request);
+		await Validate(request);
 
 		var user = await _loggedUser.User();
 
@@ -47,15 +49,21 @@ public class UpdateReservationUseCase : IUpdateReservationUseCase
 		return new ResponseShortReservationJson
 		{
 			Id = reservation.Id,
-			Name = reservation.Name
+			Name = reservation.Name,
+			UserId = reservation.UserId
 		};
 	}
 
-	private void Validate(RequestReservationJson request)
+	private async Task Validate(RequestReservationJson request)
 	{
 		var validator = new ReservationValidator();
 
 		var result = validator.Validate(request);
+
+		bool isOcuppied = await _writeRepository.IsTimeOccupied(request.RoomId, request.InitialTime, request.EndTime);
+
+		if (isOcuppied)
+			throw new ErrorOnValidationException([ResourceMessagesException.RESERVATION_OCCUPIED]);
 
 		if (!result.IsValid)
 		{

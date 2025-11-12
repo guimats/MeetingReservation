@@ -9,4 +9,5 @@ public class ResponseLongReservationJson
     public DateTime EndTime { get; set; }
     public int Participants { get; set; }
     public long UserId { get; set; }
+    public long RoomId { get; set; }
 }

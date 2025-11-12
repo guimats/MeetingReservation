@@ -10,4 +10,6 @@ public class Reservation : EntityBase
     public DateTime UpdatedAt { get; set; }
     public long UserId { get; set; }
     public User? User { get; set; }
+	public long RoomId { get; set; }
+	public Room? Room { get; set; }
 }

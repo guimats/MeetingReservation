@@ -88,6 +88,15 @@ namespace MeetingReservation.Exceptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Capacity can&apos;t be empty..
+        /// </summary>
+        public static string EMPTY_CAPACITY {
+            get {
+                return ResourceManager.GetString("EMPTY_CAPACITY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to E-mail can&apos;t be empty..
         /// </summary>
         public static string EMPTY_EMAIL {
@@ -187,11 +196,29 @@ namespace MeetingReservation.Exceptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The selected time slot is already reserved for this room..
+        /// </summary>
+        public static string RESERVATION_OCCUPIED {
+            get {
+                return ResourceManager.GetString("RESERVATION_OCCUPIED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Role is not supported..
         /// </summary>
         public static string ROLE_NOT_SUPPORTED {
             get {
                 return ResourceManager.GetString("ROLE_NOT_SUPPORTED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Room not found..
+        /// </summary>
+        public static string ROOM_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("ROOM_NOT_FOUND", resourceCulture);
             }
         }
         

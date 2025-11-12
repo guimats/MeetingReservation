@@ -15,7 +15,8 @@ public static class ReservationExtension
             InitialTime = request.InitialTime,
             EndTime = request.EndTime,
             Participants = request.Participants,
-            UserId = request.UserId
+            UserId = request.UserId,
+            RoomId = request.RoomId,
         };
     }
 
@@ -40,7 +41,8 @@ public static class ReservationExtension
             InitialTime = reservation.InitialTime,
             EndTime = reservation.EndTime,
             Participants = reservation.Participants,
-            UserId = reservation.UserId
-        };
+            UserId = reservation.UserId,
+			RoomId = reservation.RoomId
+		};
     }
 }

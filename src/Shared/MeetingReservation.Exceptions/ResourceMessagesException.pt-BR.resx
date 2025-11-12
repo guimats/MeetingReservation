@@ -126,6 +126,9 @@
   <data name="EMAIL_OR_PASSWORD_INVALID" xml:space="preserve">
     <value>E-mail ou senha inválidos.</value>
   </data>
+  <data name="EMPTY_CAPACITY" xml:space="preserve">
+    <value>Capacidade não pode ser vazio.</value>
+  </data>
   <data name="EMPTY_EMAIL" xml:space="preserve">
     <value>E-mail não pode ser vazio.</value>
   </data>
@@ -159,8 +162,14 @@
   <data name="RESERVATION_NOT_FOUND" xml:space="preserve">
     <value>Reserva não encontrada.</value>
   </data>
+  <data name="RESERVATION_OCCUPIED" xml:space="preserve">
+    <value>O horário selecionado já está reservado para esta sala.</value>
+  </data>
   <data name="ROLE_NOT_SUPPORTED" xml:space="preserve">
     <value>Cargo não é suportado.</value>
+  </data>
+  <data name="ROOM_NOT_FOUND" xml:space="preserve">
+    <value>Sala não encontrada.</value>
   </data>
   <data name="UNKNOWN_ERROR" xml:space="preserve">
     <value>Erro desconhecido!</value>

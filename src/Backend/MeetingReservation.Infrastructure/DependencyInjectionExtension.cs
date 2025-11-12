@@ -1,6 +1,7 @@
 using FluentMigrator.Runner;
 using MeetingReservation.Domain.Repositories;
 using MeetingReservation.Domain.Repositories.Reservation;
+using MeetingReservation.Domain.Repositories.Room;
 using MeetingReservation.Domain.Repositories.Token;
 using MeetingReservation.Domain.Repositories.User;
 using MeetingReservation.Domain.Security.Cryptography;
@@ -73,6 +74,10 @@ public static class DependencyInjectionExtension
         services.AddScoped<IReservationWriteOnlyRepository, ReservationRepository>();
         services.AddScoped<IReservationReadOnlyRepository, ReservationRepository>();
         services.AddScoped<IReservationUpdateOnlyRepository, ReservationRepository>();
+
+		services.AddScoped<IRoomReadOnlyRepository, RoomRepository>();
+		services.AddScoped<IRoomWriteOnlyRepository, RoomRepository>();
+		services.AddScoped<IRoomUpdateOnlyRepository, RoomRepository>();
 
 		services.AddScoped<ILoggedUser, LoggedUser>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();

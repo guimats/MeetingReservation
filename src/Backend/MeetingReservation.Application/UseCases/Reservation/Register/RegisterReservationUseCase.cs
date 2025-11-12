@@ -4,7 +4,9 @@ using MeetingReservation.Communication.Responses;
 using MeetingReservation.Domain.Repositories;
 using MeetingReservation.Domain.Repositories.Reservation;
 using MeetingReservation.Domain.Services.LoggedUser;
+using MeetingReservation.Exceptions;
 using MeetingReservation.Exceptions.ExceptionsBase;
+using System.Threading.Tasks;
 
 namespace MeetingReservation.Application.UseCases.Reservation.Register;
 
@@ -26,7 +28,7 @@ public class RegisterReservationUseCase : IRegisterReservationUseCase
 
     public async Task<ResponseShortReservationJson> Execute(RequestReservationJson request)
     {
-        Validate(request);
+        await Validate(request);
 
         var user = await _loggedUser.User();
         request.UserId = user.Id;
@@ -40,15 +42,21 @@ public class RegisterReservationUseCase : IRegisterReservationUseCase
         return new ResponseShortReservationJson
         {
             Id = reservation.Id,
-            Name = reservation.Name
+            Name = reservation.Name,
+            UserId = reservation.UserId,
         };
     }
 
-    private void Validate(RequestReservationJson request)
+    private async Task Validate(RequestReservationJson request)
     {
         var validator = new ReservationValidator();
 
         var result = validator.Validate(request);
+
+        bool isOcuppied = await _writeRepository.IsTimeOccupied(request.RoomId, request.InitialTime, request.EndTime);
+
+        if (isOcuppied)
+		    throw new ErrorOnValidationException([ResourceMessagesException.RESERVATION_OCCUPIED]);
 
         if (!result.IsValid)
         {
