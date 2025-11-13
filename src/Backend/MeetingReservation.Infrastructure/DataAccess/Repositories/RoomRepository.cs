@@ -1,3 +1,4 @@
+using MeetingReservation.Domain.DTOs;
 using MeetingReservation.Domain.Entities;
 using MeetingReservation.Domain.Repositories.Room;
 using Microsoft.EntityFrameworkCore;
@@ -46,11 +47,20 @@ public class RoomRepository : IRoomReadOnlyRepository, IRoomWriteOnlyRepository,
 		_dbContext.Rooms.Update(room);
 	}
 
-	public async Task<IList<Room>> GetAllRooms()
+	public async Task<IList<Room>> Filter(FilterRoomsDTO filter)
 	{
-		return await _dbContext.Rooms
-			.AsNoTracking()
-			.Where(r => r.Active)
-			.ToListAsync();
+		var query = _dbContext.Rooms
+			.Where(r => r.Active);
+
+		if (string.IsNullOrWhiteSpace(filter.Name) == false)
+			query = query.Where(r => r.Name.Contains(filter.Name));
+
+		if (filter.Capacity.HasValue)
+			query = query.Where(r => r.Capacity >= filter.Capacity);
+
+		if (string.IsNullOrWhiteSpace(filter.Location) == false)
+			query = query.Where(r => r.Location.Contains(filter.Location));
+
+		return await query.AsNoTracking().ToListAsync();
 	}
 }

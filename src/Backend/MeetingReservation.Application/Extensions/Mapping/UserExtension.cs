@@ -31,9 +31,31 @@ public static class UserExtension
     {
         return new ResponseUserProfileJson
         {
+			Id = user.Id,
             Name = user.Name,
             Email = user.Email,
             Role = user.Role.ToString()
         };
     }
+
+	public static ResponseUsersJson MapToUsers(this IList<User> users)
+	{
+		var response = users.Select(user => user.MapToProfile()).ToList();
+
+		return new ResponseUsersJson
+		{
+			Users = response
+		};
+	}
+
+	public static User MapToUser(this RequestRegisterCompanyJson request)
+	{
+		return new User
+		{
+			Name = request.UserName,
+			Email = request.UserEmail,
+			Password = request.UserPassword,
+			Role = Domain.Enums.Role.Admin
+		};
+	}
 }

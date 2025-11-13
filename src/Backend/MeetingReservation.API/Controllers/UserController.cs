@@ -1,6 +1,7 @@
 ﻿using MeetingReservation.API.Attributes;
 using MeetingReservation.Application.UseCases.User.ChangePassword;
 using MeetingReservation.Application.UseCases.User.Delete;
+using MeetingReservation.Application.UseCases.User.Filter;
 using MeetingReservation.Application.UseCases.User.GetById;
 using MeetingReservation.Application.UseCases.User.Profile;
 using MeetingReservation.Application.UseCases.User.Register;
@@ -85,4 +86,15 @@ public class UserController : ControllerBase
 
         return NoContent();
     }
+
+	[HttpPost("filter")]
+	[ProducesResponseType(typeof(ResponseUsersJson), StatusCodes.Status200OK)]
+	public async Task<IActionResult> Filter(
+		[FromServices] IFilterUsersUseCase useCase,
+		[FromBody] RequestFilterUsersJson request)
+	{
+		var result = await useCase.Execute(request);
+
+		return Ok(result);
+	}
 }

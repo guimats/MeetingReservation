@@ -1,3 +1,4 @@
+using MeetingReservation.Domain.DTOs;
 using MeetingReservation.Domain.Entities;
 using MeetingReservation.Domain.Repositories.User;
 using Microsoft.EntityFrameworkCore;
@@ -47,4 +48,25 @@ public class UserRepository : IUserReadOnlyRepository, IUserWriteOnlyRepository,
     async Task<User?> IUserUpdateOnlyRepository.GetById(long id) => await _dbContext.Users.FirstOrDefaultAsync(user => user.Id.Equals(id) && user.Active);
 
     public void Update(User user) => _dbContext.Users.Update(user);
+
+	public async Task<IList<User>> Filter(FilterUsersDTO filter)
+	{
+        var query = _dbContext.Users.Where(u => u.Active);
+
+        if (string.IsNullOrWhiteSpace(filter.Name) == false)
+        {
+            query = query.Where(u => u.Name.Contains(filter.Name));
+        }
+
+        if (string.IsNullOrWhiteSpace(filter.Email) == false){
+            query = query.Where(u => u.Email.StartsWith(filter.Email));
+        }
+
+        if (filter.Role is not null)
+        {
+            query = query.Where(u => u.Role.Equals(filter.Role));
+        }
+
+        return await query.AsNoTracking().ToListAsync();
+	}
 }

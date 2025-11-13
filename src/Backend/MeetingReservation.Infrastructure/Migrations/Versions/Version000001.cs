@@ -12,7 +12,8 @@ namespace MeetingReservation.Infrastructure.Migrations.Versions
                 .WithColumn("Email").AsString(255).NotNullable()
                 .WithColumn("Password").AsString(2000).NotNullable()
                 .WithColumn("UserIdentifier").AsGuid().NotNullable()
-                .WithColumn("Role").AsInt32().NotNullable();
+                .WithColumn("Role").AsInt32().NotNullable()
+                .WithColumn("CompanyId").AsInt64().NotNullable();
 
             CreateTable("RefreshTokens")
                 .WithColumn("Value").AsString().NotNullable()

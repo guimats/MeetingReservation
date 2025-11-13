@@ -12,7 +12,8 @@ namespace MeetingReservation.Infrastructure.Migrations.Versions
 				.WithColumn("Name").AsString(255).NotNullable()
 				.WithColumn("Capacity").AsInt32().NotNullable()
 				.WithColumn("Location").AsString(255).Nullable()
-				.WithColumn("UserId").AsInt32().NotNullable();
+				.WithColumn("UserId").AsInt32().NotNullable()
+				.WithColumn("CompanyId").AsInt64().NotNullable();
 
 			Alter.Table("Reservations")
 				.AddColumn("RoomId").AsInt64().NotNullable()

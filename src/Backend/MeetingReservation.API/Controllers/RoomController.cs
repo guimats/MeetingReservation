@@ -1,6 +1,6 @@
 ﻿using MeetingReservation.API.Attributes;
 using MeetingReservation.Application.UseCases.Room.Delete;
-using MeetingReservation.Application.UseCases.Room.GetAll;
+using MeetingReservation.Application.UseCases.Room.Filter;
 using MeetingReservation.Application.UseCases.Room.GetById;
 using MeetingReservation.Application.UseCases.Room.Register;
 using MeetingReservation.Application.UseCases.Room.Update;
@@ -60,12 +60,13 @@ public class RoomController : ControllerBase
 		return NoContent();
 	}
 
-	[HttpGet("dashboard")]
-	[ProducesResponseType(typeof(ResponseAllRoomsJson), StatusCodes.Status200OK)]
-	public async Task<IActionResult> GetAllRooms(
-		[FromServices] IGetAllRoomsUseCase useCase)
+	[HttpPost("filter")]
+	[ProducesResponseType(typeof(ResponseRoomsJson), StatusCodes.Status200OK)]
+	public async Task<IActionResult> Filter(
+		[FromServices] IFilterRoomsUseCase useCase,
+		[FromBody] RequestFilterRoomsJson request)
 	{
-		var result = await useCase.Execute();
+		var result = await useCase.Execute(request);
 
 		return Ok(result);
 	}

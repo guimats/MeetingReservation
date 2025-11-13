@@ -1,6 +1,6 @@
 namespace MeetingReservation.Communication.Responses;
 
-public class ResponseAllRoomsJson
+public class ResponseRoomsJson
 {
 	public IList<ResponseShortRoomJson> Rooms { get; set; } = [];
 }

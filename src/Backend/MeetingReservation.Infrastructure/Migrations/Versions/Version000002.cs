@@ -15,6 +15,7 @@ public class Version000002 : VersionBase
             .WithColumn("Participants").AsInt32().NotNullable()
             .WithColumn("UpdatedAt").AsDateTime().Nullable()
             .WithColumn("UserId").AsInt64().NotNullable()
+			.WithColumn("CompanyId").AsInt64().NotNullable()
                 .ForeignKey("FK_Reservations_User_Id", "Users", "Id")
                 .OnDeleteOrUpdate(System.Data.Rule.Cascade);
     }

@@ -55,11 +55,11 @@ public static class RoomExtension
 		};
 	}
 
-	public static ResponseAllRoomsJson MapToAllRooms(this IList<Room> rooms)
+	public static ResponseRoomsJson MapToRooms(this IList<Room> rooms)
 	{
 		var response = rooms.Select(room => room.MapToShortResponse()).ToList();
 
-		return new ResponseAllRoomsJson { 
+		return new ResponseRoomsJson { 
 			Rooms = response
 		};
 	}

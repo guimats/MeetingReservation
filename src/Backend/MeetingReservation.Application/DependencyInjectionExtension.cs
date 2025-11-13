@@ -1,16 +1,18 @@
+using MeetingReservation.Application.Service.Company;
 using MeetingReservation.Application.UseCases.Login.DoLogin;
 using MeetingReservation.Application.UseCases.Reservation.Delete;
 using MeetingReservation.Application.UseCases.Reservation.GetById;
 using MeetingReservation.Application.UseCases.Reservation.Register;
 using MeetingReservation.Application.UseCases.Reservation.Update;
 using MeetingReservation.Application.UseCases.Room.Delete;
-using MeetingReservation.Application.UseCases.Room.GetAll;
+using MeetingReservation.Application.UseCases.Room.Filter;
 using MeetingReservation.Application.UseCases.Room.GetById;
 using MeetingReservation.Application.UseCases.Room.Register;
 using MeetingReservation.Application.UseCases.Room.Update;
 using MeetingReservation.Application.UseCases.Token;
 using MeetingReservation.Application.UseCases.User.ChangePassword;
 using MeetingReservation.Application.UseCases.User.Delete;
+using MeetingReservation.Application.UseCases.User.Filter;
 using MeetingReservation.Application.UseCases.User.GetById;
 using MeetingReservation.Application.UseCases.User.Profile;
 using MeetingReservation.Application.UseCases.User.Register;
@@ -35,10 +37,11 @@ public static class DependencyInjectionExtension
         services.AddScoped<IDeleteUserUseCase, DeleteUserUseCase>();
         services.AddScoped<IChangePasswordUseCase, ChangePasswordUseCase>();
         services.AddScoped<IUpdateUserUseCase, UpdateUserUseCase>();
+		services.AddScoped<IFilterUsersUseCase, FilterUsersUseCase>();
 
-        services.AddScoped<IDoLoginUseCase, DoLoginUseCase>();
+		services.AddScoped<IDoLoginUseCase, DoLoginUseCase>();
 
-        services.AddScoped<IUseRefreshTokenUseCase, UseRefreshTokenUseCase>();
+		services.AddScoped<IUseRefreshTokenUseCase, UseRefreshTokenUseCase>();
 
         services.AddScoped<IRegisterReservationUseCase, RegisterReservationUseCase>(); 
         services.AddScoped<IGetReservationByIdUseCase, GetReservationByIdUseCase>(); 
@@ -49,6 +52,6 @@ public static class DependencyInjectionExtension
 		services.AddScoped<IGetRoomByIdUseCase, GetRoomByIdUseCase>();
 		services.AddScoped<IDeleteRoomUseCase, DeleteRoomUseCase>();
 		services.AddScoped<IUpdateRoomUseCase, UpdateRoomUseCase>();
-		services.AddScoped<IGetAllRoomsUseCase, GetAllRoomsUseCase>();
+		services.AddScoped<IFilterRoomsUseCase, FilterRoomsUseCase>();
 	}
 }

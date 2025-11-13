@@ -7,6 +7,7 @@ namespace MeetingReservation.Domain.Entities
 		public string Location { get; set; } = string.Empty;
 		public long UserId { get; set; }
 		public User? User { get; set; }
+		public long CompanyId { get; set; }
 
 		public IList<Reservation> Reservations { get; set; } = new List<Reservation>();
 	}
