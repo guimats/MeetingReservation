@@ -19,4 +19,11 @@ public class CompanyController : ControllerBase
 
 		return Created(string.Empty, result);
 	}
+
+	[HttpGet]
+	[ProducesResponseType(typeof(ResponseShortCompanyJson), StatusCodes.Status200OK)]
+	public async Task<IActionResult> Register()
+	{
+		throw new NotImplementedException();
+	}
 }

@@ -9,6 +9,6 @@ namespace MeetingReservation.Domain.Entities
 		public User? User { get; set; }
 		public long CompanyId { get; set; }
 
-		public IList<Reservation> Reservations { get; set; } = new List<Reservation>();
+		public IList<Reservation> Reservations { get; set; } = [];
 	}
 }
