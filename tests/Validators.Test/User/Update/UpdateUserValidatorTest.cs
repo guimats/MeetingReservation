@@ -8,6 +8,6 @@ public class UpdateUserValidatorTest
     public void Success()
     {
         var validator = new UpdateUserValidator();
-        var request = new 
+        //var request = new 
     }
 }

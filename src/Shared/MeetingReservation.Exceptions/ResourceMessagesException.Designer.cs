@@ -133,6 +133,15 @@ namespace MeetingReservation.Exceptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Username can&apos;t be empty..
+        /// </summary>
+        public static string EMPTY_USERNAME {
+            get {
+                return ResourceManager.GetString("EMPTY_USERNAME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You don&apos;t have permission to access this resource.
         /// </summary>
         public static string FORBIDDEN_ACCESS {

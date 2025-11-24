@@ -141,6 +141,9 @@
   <data name="EMPTY_PASSWORD" xml:space="preserve">
     <value>Password can't be empty.</value>
   </data>
+  <data name="EMPTY_USERNAME" xml:space="preserve">
+    <value>Username can't be empty.</value>
+  </data>
   <data name="FORBIDDEN_ACCESS" xml:space="preserve">
     <value>You don't have permission to access this resource</value>
   </data>

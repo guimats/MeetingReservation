@@ -1,3 +1,4 @@
+
 namespace MeetingReservation.Communication.Requests;
 
 public class RequestRegisterCompanyJson

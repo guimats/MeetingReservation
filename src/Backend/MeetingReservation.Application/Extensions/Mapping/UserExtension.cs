@@ -48,13 +48,13 @@ public static class UserExtension
 		};
 	}
 
-	public static User MapToUser(this RequestRegisterCompanyJson request)
+	public static RequestRegisterUserJson MapToRegisterUser(this RequestRegisterCompanyJson request)
 	{
-		return new User
+		return new RequestRegisterUserJson
 		{
 			Name = request.UserName,
-			Email = request.UserEmail,
 			Password = request.UserPassword,
+			Email = request.UserEmail,
 			Role = Domain.Enums.Role.Admin
 		};
 	}

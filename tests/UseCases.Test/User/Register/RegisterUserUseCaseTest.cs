@@ -64,13 +64,12 @@ public class RegisterUserUseCaseTest
         if (user is not null)
             readRepositoryBuilder.GetByEmail(user);
 
-        return new RegisterUserUseCase(
-            unitOfWork,
-            writeRepository,
-            readRepositoryBuilder.Build(),
-            accessTokenGenerator,
-            passwordEncripter,
-            refreshTokenGenerator,
-            tokenRepository);
+        throw new NotImplementedException();
+
+        //return new RegisterUserUseCase(
+        //    unitOfWork,
+        //    writeRepository,
+        //    accessTokenGenerator,
+        //    tokenRepository);
     }
 }

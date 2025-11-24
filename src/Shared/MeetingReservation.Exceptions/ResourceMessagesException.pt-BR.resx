@@ -141,6 +141,9 @@
   <data name="EMPTY_PASSWORD" xml:space="preserve">
     <value>Senha não pode ser vazia.</value>
   </data>
+  <data name="EMPTY_USERNAME" xml:space="preserve">
+    <value>Nome do usuário não pode ser vazio.</value>
+  </data>
   <data name="FORBIDDEN_ACCESS" xml:space="preserve">
     <value>Você não tem permissão para acessar este recurso</value>
   </data>
