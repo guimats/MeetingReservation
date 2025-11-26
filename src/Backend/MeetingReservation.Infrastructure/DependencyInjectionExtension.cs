@@ -82,6 +82,7 @@ public static class DependencyInjectionExtension
 
         services.AddScoped<ICompanyWriteOnlyRepository, CompanyRepository>();
         services.AddScoped<ICompanyReadOnlyRepository, CompanyRepository>();
+		services.AddScoped<ICompanyUpdateOnlyRepository, CompanyRepository>();
 
 		services.AddScoped<ILoggedUser, LoggedUser>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();

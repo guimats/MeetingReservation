@@ -23,4 +23,10 @@ public static class CompanyExtension
 			Users = company.Users.Count
 		};
 	}
+	public static Company MapToCompany(this RequestUpdateCompanyJson request, Company company)
+	{
+		company.Name = request.Name;
+
+		return company;
+	}
 }
