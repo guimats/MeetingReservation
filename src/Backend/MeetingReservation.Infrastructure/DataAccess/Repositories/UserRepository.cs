@@ -28,11 +28,21 @@ public class UserRepository : IUserReadOnlyRepository, IUserWriteOnlyRepository,
         _dbContext.Users.Remove(user!);
     }
 
-    public async Task<bool> ExistActiveEmail(string email) => await _dbContext.Users.AnyAsync(user => user.Email.Equals(email) && user.Active);
+    public async Task<bool> ExistActiveEmail(string email)
+    {
+		return await _dbContext
+			.Users
+			.IgnoreQueryFilters()
+			.AnyAsync(user => user.Email
+			.Equals(email) && user.Active);
+	}
 
     public async Task<bool> ExistActiveUserWithIdentifier(Guid userIdentifier)
     {
-        return await _dbContext.Users.AnyAsync(user => user.UserIdentifier.Equals(userIdentifier) && user.Active);
+        return await _dbContext
+            .Users
+			.IgnoreQueryFilters()
+			.AnyAsync(user => user.UserIdentifier.Equals(userIdentifier) && user.Active);
     }
 
     public async Task<User?> GetByEmail(string email) 
@@ -40,7 +50,8 @@ public class UserRepository : IUserReadOnlyRepository, IUserWriteOnlyRepository,
         return await _dbContext
             .Users
             .AsNoTracking()
-            .FirstOrDefaultAsync(user => user.Email.Equals(email) && user.Active);
+			.IgnoreQueryFilters()
+			.FirstOrDefaultAsync(user => user.Email.Equals(email) && user.Active);
     }
 
     async Task<User?> IUserReadOnlyRepository.GetById(long id) => await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(user => user.Id.Equals(id) && user.Active);

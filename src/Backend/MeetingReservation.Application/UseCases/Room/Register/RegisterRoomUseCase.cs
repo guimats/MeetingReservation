@@ -32,6 +32,8 @@ public class RegisterRoomUseCase : IRegisterRoomUseCase
 
 		var room = request.MapToRoom();
 
+		room.CompanyId = user.CompanyId;
+
 		await _repository.Add(room);
 
 		await _unitOfWork.Commit();

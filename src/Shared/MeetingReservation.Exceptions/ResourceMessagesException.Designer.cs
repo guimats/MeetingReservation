@@ -61,6 +61,15 @@ namespace MeetingReservation.Exceptions {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Company not found..
+        /// </summary>
+        public static string COMPANY_NOT_FOUND {
+            get {
+                return ResourceManager.GetString("COMPANY_NOT_FOUND", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The description must be less than 255 characters..
         /// </summary>
         public static string DESCRIPTION_TOO_LONGER {

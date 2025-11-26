@@ -1,6 +1,6 @@
 namespace MeetingReservation.Domain.Entities;
 
-public class Reservation : EntityBase
+public class Reservation : EntityBase, IHaveCompany
 {
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;

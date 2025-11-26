@@ -1,12 +1,17 @@
 
 using MeetingReservation.API.Filters;
+using MeetingReservation.API.Providers.Tenant;
 using MeetingReservation.API.Token;
 using MeetingReservation.Application;
 using MeetingReservation.Domain.Security.Tokens;
+using MeetingReservation.Domain.Services.TenantProvider;
 using MeetingReservation.Infrastructure;
 using MeetingReservation.Infrastructure.Extensions;
 using MeetingReservation.Infrastructure.Migrations;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -53,11 +58,34 @@ builder.Services.AddMvc(options => options.Filters.Add(typeof(ExceptionFilter)))
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddScoped<ITokenProvider, HttpContextTokenValue>();
+builder.Services.AddScoped<ITenantProvider, TenantProvider>();
 
 //deixando os nomes dos endpoints em minusculo na URL
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 builder.Services.AddHttpContextAccessor();
+
+var jwtSettings = builder.Configuration.GetSection("Settings:Jwt");
+var signingKey = jwtSettings["SigningKey"] ?? throw new InvalidOperationException("Settings:Jwt:SigningKey não configurado.");
+
+builder.Services.AddAuthentication(options =>
+{
+	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+	options.TokenValidationParameters = new TokenValidationParameters
+	{
+		ValidateIssuer = false,
+		ValidateAudience = false,
+
+		// Usando a chave configurada para validar a assinatura
+		//ValidIssuer = jwtSettings["Issuer"],
+		//ValidAudience = jwtSettings["Audience"],
+		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey))
+	};
+});
 
 var app = builder.Build();
 
@@ -69,6 +97,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

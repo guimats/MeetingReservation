@@ -34,6 +34,7 @@ public class RegisterReservationUseCase : IRegisterReservationUseCase
         request.UserId = user.Id;
 
         var reservation = request.MapToReservation();
+        reservation.CompanyId = user.CompanyId;
 
         await _writeRepository.Add(reservation);
 

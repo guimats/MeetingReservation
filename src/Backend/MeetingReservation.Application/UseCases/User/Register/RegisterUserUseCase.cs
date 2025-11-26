@@ -41,7 +41,7 @@ public class RegisterUserUseCase : IRegisterUserUseCase
             Name = user.Name,
             Tokens = new ResponseTokensJson
             {
-                AccessToken = _accessTokenGenerator.Generate(user.UserIdentifier, user.Role),
+                AccessToken = _accessTokenGenerator.Generate(user),
                 RefreshToken = refreshToken
             }
         };

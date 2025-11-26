@@ -1,11 +1,17 @@
 using MeetingReservation.Domain.Entities;
+using MeetingReservation.Domain.Services.TenantProvider;
 using Microsoft.EntityFrameworkCore;
 
 namespace MeetingReservation.Infrastructure.DataAccess;
 
 public class MeetingReservationDbContext : DbContext
 {
-    public MeetingReservationDbContext(DbContextOptions options) : base(options) { }
+	private readonly ITenantProvider _tenantProvider;
+
+	public MeetingReservationDbContext(DbContextOptions options, ITenantProvider tenantProvider) : base(options)
+	{
+		_tenantProvider = tenantProvider;
+	}
 
     public DbSet<User> Users { get; set; }
     public DbSet<Reservation> Reservations { get; set; }
@@ -17,5 +23,9 @@ public class MeetingReservationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
 		modelBuilder.ApplyConfigurationsFromAssembly(typeof(MeetingReservationDbContext).Assembly);
+
+		modelBuilder.Entity<User>().HasQueryFilter(u => u.CompanyId == _tenantProvider.GetCompanyId());
+		modelBuilder.Entity<Reservation>().HasQueryFilter(r => r.CompanyId == _tenantProvider.GetCompanyId());
+		modelBuilder.Entity<Room>().HasQueryFilter(r => r.CompanyId == _tenantProvider.GetCompanyId());
 	}
 }

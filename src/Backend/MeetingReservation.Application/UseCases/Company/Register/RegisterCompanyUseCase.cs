@@ -35,15 +35,17 @@ public class RegisterCompanyUseCase : IRegisterCompanyUseCase
 	{
 		Validate(request);
 
+		var company = request.MapToCompany();
+
 		var userRequest = request.MapToRegisterUser();
 
 		var user = await _registerUserHelper.CreateUser(userRequest);
 
-		var company = request.MapToCompany();
-
-		await _userWriteRepository.Add(user);
+		user.Company = company;
 
 		await _companyRepository.Add(company);
+
+		await _userWriteRepository.Add(user);
 
 		await _unitOfWork.Commit();
 
@@ -54,7 +56,7 @@ public class RegisterCompanyUseCase : IRegisterCompanyUseCase
 			Name = user.Name,
 			Tokens = new ResponseTokensJson
 			{
-				AccessToken = _accessTokenGenerator.Generate(user.UserIdentifier, user.Role),
+				AccessToken = _accessTokenGenerator.Generate(user),
 				RefreshToken = refreshToken
 			}
 		};

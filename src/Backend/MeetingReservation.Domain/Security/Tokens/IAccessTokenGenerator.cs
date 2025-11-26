@@ -1,8 +1,8 @@
-using MeetingReservation.Domain.Enums;
+using MeetingReservation.Domain.Entities;
 
 namespace MeetingReservation.Domain.Security.Tokens;
 
 public interface IAccessTokenGenerator
 {
-    public string Generate(Guid userIdentifier, Role role);
+    public string Generate(User user);
 }

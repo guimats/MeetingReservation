@@ -34,7 +34,7 @@ public class UpdateUserUseCase : IUpdateUserUseCase
 
         var loggedUser = await _loggedUser.User();
 
-        loggedUser = request.MapToUser();
+        loggedUser = request.MapToUser(loggedUser);
 
         _updateRepository.Update(loggedUser);
 

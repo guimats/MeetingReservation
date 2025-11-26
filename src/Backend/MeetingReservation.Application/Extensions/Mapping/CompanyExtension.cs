@@ -1,4 +1,5 @@
 using MeetingReservation.Communication.Requests;
+using MeetingReservation.Communication.Responses;
 using MeetingReservation.Domain.Entities;
 
 namespace MeetingReservation.Application.Extensions.Mapping;
@@ -10,6 +11,16 @@ public static class CompanyExtension
 		return new Company
 		{
 			Name = request.Name
+		};
+	}
+
+	public static ResponseShortCompanyJson MapToShortRequest(this Company company)
+	{
+		return new ResponseShortCompanyJson
+		{
+			Id = company.Id,
+			Name = company.Name,
+			Users = company.Users.Count
 		};
 	}
 }

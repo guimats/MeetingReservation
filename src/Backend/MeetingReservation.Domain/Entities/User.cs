@@ -2,7 +2,7 @@ using MeetingReservation.Domain.Enums;
 
 namespace MeetingReservation.Domain.Entities;
 
-public class User : EntityBase
+public class User : EntityBase, IHaveCompany
 {
     public string Name { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
@@ -10,4 +10,6 @@ public class User : EntityBase
     public Guid UserIdentifier { get; set; }
     public long CompanyId { get; set; }
     public Role Role { get; set; }
+
+    public Company Company { get; set; }
 }

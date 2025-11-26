@@ -81,10 +81,11 @@ public static class DependencyInjectionExtension
 		services.AddScoped<IRoomUpdateOnlyRepository, RoomRepository>();
 
         services.AddScoped<ICompanyWriteOnlyRepository, CompanyRepository>();
+        services.AddScoped<ICompanyReadOnlyRepository, CompanyRepository>();
 
 		services.AddScoped<ILoggedUser, LoggedUser>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-    }
+	}
 
     private static void AddTokens(IServiceCollection services, IConfiguration configuration)
     {

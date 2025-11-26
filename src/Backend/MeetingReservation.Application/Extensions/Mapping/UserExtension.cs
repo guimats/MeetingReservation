@@ -13,18 +13,18 @@ public static class UserExtension
             Name = request.Name,
             Email = request.Email,
             Password = request.Password,
-            Role = request.Role
-        };
+            Role = request.Role,
+			CompanyId = request.CompanyId
+		};
     }
 
-	public static User MapToUser(this RequestUpdateUserJson request)
+	public static User MapToUser(this RequestUpdateUserJson request, User user)
 	{
-		return new User
-		{
-			Name = request.Name,
-			Email = request.Email,
-			Role = request.Role
-		};
+		user.Name = request.Name;
+		user.Email = request.Email;
+		user.Role = request.Role;
+
+		return user;
 	}
 
 	public static ResponseUserProfileJson MapToProfile(this User user)

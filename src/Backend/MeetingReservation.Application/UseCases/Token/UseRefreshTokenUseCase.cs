@@ -49,7 +49,7 @@ public class UseRefreshTokenUseCase : IUseRefreshTokenUseCase
 
         return new ResponseTokensJson
         {
-            AccessToken = _accessTokenGenerator.Generate(refreshToken.User.UserIdentifier, refreshToken.User.Role),
+            AccessToken = _accessTokenGenerator.Generate(refreshToken.User),
             RefreshToken = newRefreshToken.Value
         };
     }

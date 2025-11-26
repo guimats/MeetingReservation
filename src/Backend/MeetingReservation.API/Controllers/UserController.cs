@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MeetingReservation.API.Controllers;
 
+[AuthenticatedUser]
 [Route("[controller]")]
 [ApiController]
 public class UserController : ControllerBase
@@ -29,7 +30,6 @@ public class UserController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(typeof(ResponseUserProfileJson), StatusCodes.Status200OK)]
-    [AuthenticatedUser]
     public async Task<IActionResult> GetProfile([FromServices] IGetUserProfileUseCase useCase)
     {
         var result = await useCase.Execute();
@@ -39,7 +39,6 @@ public class UserController : ControllerBase
 
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(ResponseUserProfileJson), StatusCodes.Status200OK)]
-    [AuthenticatedUser]
     public async Task<IActionResult> GetProfileById(
         [FromServices] IGetProfileByIdUseCase useCase,
         [FromRoute] long id)
@@ -51,7 +50,6 @@ public class UserController : ControllerBase
 
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [AuthenticatedUser]
     public async Task<IActionResult> DeleteById(
         [FromServices] IDeleteUserUseCase useCase,
         [FromRoute] long id)
@@ -64,7 +62,6 @@ public class UserController : ControllerBase
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
-    [AuthenticatedUser]
     public async Task<IActionResult> Update(
             [FromServices] IUpdateUserUseCase useCase,
             [FromBody] RequestUpdateUserJson request)
@@ -77,7 +74,6 @@ public class UserController : ControllerBase
     [HttpPut("change-password")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
-    [AuthenticatedUser]
     public async Task<IActionResult> ChangePassword(
             [FromServices] IChangePasswordUseCase useCase,
             [FromBody] RequestChangePasswordJson request)

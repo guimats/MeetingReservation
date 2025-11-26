@@ -1,4 +1,4 @@
-using MeetingReservation.Domain.Enums;
+using MeetingReservation.Domain.Entities;
 using MeetingReservation.Domain.Security.Tokens;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -17,13 +17,14 @@ namespace MeetingReservation.Infrastructure.Security.Tokens.Access.Generator
             _signingKey = signingKey;
         }
 
-        public string Generate(Guid userIdentifier, Role role)
+        public string Generate(User user)
         {
             // criando uma lista de claims e incluindo o userIdentifier
             var claims = new List<Claim>()
             {
-                new Claim(ClaimTypes.Sid, userIdentifier.ToString()),
-                new Claim(ClaimTypes.Role, role.ToString())
+                new Claim(ClaimTypes.Sid, user.UserIdentifier.ToString()),
+                new Claim(ClaimTypes.Role, user.Role.ToString()),
+                new Claim("CompanyId", user.CompanyId.ToString())
             };
 
             // definindo a chave de assinatura e a data de expiração do token

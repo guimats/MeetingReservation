@@ -1,4 +1,6 @@
-﻿using MeetingReservation.Application.UseCases.Company.Register;
+﻿using MeetingReservation.API.Attributes;
+using MeetingReservation.Application.UseCases.Company.GetById;
+using MeetingReservation.Application.UseCases.Company.Register;
 using MeetingReservation.Communication.Requests;
 using MeetingReservation.Communication.Responses;
 using Microsoft.AspNetCore.Mvc;
@@ -20,9 +22,20 @@ public class CompanyController : ControllerBase
 		return Created(string.Empty, result);
 	}
 
+	[AuthenticatedUser]
 	[HttpGet]
 	[ProducesResponseType(typeof(ResponseShortCompanyJson), StatusCodes.Status200OK)]
-	public async Task<IActionResult> Register()
+	public async Task<IActionResult> GetProfile(
+		[FromServices] IGetCompanyByIdUseCase useCase)
+	{
+		var result = await useCase.Execute();
+
+		return Ok(result);
+	}
+
+	[AuthenticatedUser]
+	[HttpPost]
+	public async Task<IActionResult> Update()
 	{
 		throw new NotImplementedException();
 	}
