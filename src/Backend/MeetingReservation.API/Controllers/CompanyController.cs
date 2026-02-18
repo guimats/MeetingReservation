@@ -34,7 +34,7 @@ public class CompanyController : ControllerBase
 	}
 
 	[AuthenticatedUser]
-	[HttpPost]
+	[HttpPut]
 	public async Task<IActionResult> Update()
 	{
 		throw new NotImplementedException();
