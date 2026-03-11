@@ -50,7 +50,8 @@ public class UpdateReservationUseCase : IUpdateReservationUseCase
 		{
 			Id = reservation.Id,
 			Name = reservation.Name,
-			UserId = reservation.UserId
+			Description = reservation.Description,
+			UserEmail = reservation.User!.Email
 		};
 	}
 

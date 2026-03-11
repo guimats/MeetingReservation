@@ -31,6 +31,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Validators.Test", "tests\Va
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi.Test", "tests\WebApi.Test\WebApi.Test.csproj", "{0712EAAB-10BF-403A-BBC3-EF437290F1FC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{C1383341-9AE5-4640-968B-44A857947390}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "Docker\docker-compose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +81,10 @@ Global
 		{0712EAAB-10BF-403A-BBC3-EF437290F1FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0712EAAB-10BF-403A-BBC3-EF437290F1FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0712EAAB-10BF-403A-BBC3-EF437290F1FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,6 +102,7 @@ Global
 		{B8AE1C97-26F0-4F9B-8FC5-39C04CF59689} = {D45E49A2-88A6-41C6-B31E-28F18EFD5A1D}
 		{952CD30D-DCEC-47E4-AAD0-3BD64A73BD41} = {D45E49A2-88A6-41C6-B31E-28F18EFD5A1D}
 		{0712EAAB-10BF-403A-BBC3-EF437290F1FC} = {D45E49A2-88A6-41C6-B31E-28F18EFD5A1D}
+		{81DDED9D-158B-E303-5F62-77A2896D2A5A} = {C1383341-9AE5-4640-968B-44A857947390}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D5A64DA4-1D0C-4229-807E-DDC7BD8C4D4F}

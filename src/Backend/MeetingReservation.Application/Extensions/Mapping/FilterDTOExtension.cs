@@ -24,4 +24,14 @@ public static class FilterDTOExtension
 			Role = request.Role
 		};
 	}
+
+	public static FilterReservationsDTO MapToFilter(this RequestFilterReservationsJson request)
+	{
+		return new FilterReservationsDTO
+		{
+			Name = request.Name,
+			Description = request.Description,
+			MinParticipants = request.MinParticipants
+		};
+	}
 }

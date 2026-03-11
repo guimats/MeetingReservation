@@ -1,10 +1,11 @@
 using MeetingReservation.Application.Extensions.Mapping;
 using MeetingReservation.Communication.Requests;
+using MeetingReservation.Domain.Enums;
 using MeetingReservation.Domain.Repositories;
 using MeetingReservation.Domain.Repositories.Company;
 using MeetingReservation.Domain.Services.LoggedUser;
 using MeetingReservation.Exceptions;
-using System.Threading.Tasks;
+using MeetingReservation.Exceptions.ExceptionsBase;
 
 namespace MeetingReservation.Application.UseCases.Company.Update;
 
@@ -33,7 +34,10 @@ public class UpdateCompanyUseCase : IUpdateCompanyUseCase
 		var company = await _repository.GetById(user.CompanyId);
 
 		if (company == null)
-			throw new NotImplementedException(ResourceMessagesException.COMPANY_NOT_FOUND);
+			throw new NotFoundException(ResourceMessagesException.COMPANY_NOT_FOUND);
+
+		if (company.Users.Contains(user) == false && user.Role.Equals(Role.Admin) == false)
+			throw new ForbiddenException();
 
 		company = request.MapToCompany(company);
 

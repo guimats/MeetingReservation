@@ -44,7 +44,8 @@ public class RegisterReservationUseCase : IRegisterReservationUseCase
         {
             Id = reservation.Id,
             Name = reservation.Name,
-            UserId = reservation.UserId,
+            Description = reservation.Description,
+            UserEmail = reservation.User!.Email
         };
     }
 

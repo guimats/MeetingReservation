@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using MeetingReservation.API.Attributes;
 using MeetingReservation.Application.UseCases.Reservation.Delete;
+using MeetingReservation.Application.UseCases.Reservation.Filter;
 using MeetingReservation.Application.UseCases.Reservation.GetById;
 using MeetingReservation.Application.UseCases.Reservation.Register;
 using MeetingReservation.Application.UseCases.Reservation.Update;
@@ -60,4 +61,16 @@ public class ReservationController : ControllerBase
 
 		return Ok(result);
 	}
+
+    [HttpPost("filter")]
+    [ProducesResponseType(typeof(ResponseReservationsJson), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Filter(
+        [FromServices] IFilterReservationsUseCase useCase,
+        [FromBody] RequestFilterReservationsJson request
+        )
+    {
+        var result = await useCase.Execute(request);
+
+        return Ok(result);
+    }
 }

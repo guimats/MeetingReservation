@@ -1,3 +1,5 @@
+using MeetingReservation.Domain.Entities;
+
 namespace MeetingReservation.Communication.Responses;
 
 public class ResponseLongReservationJson
@@ -10,4 +12,5 @@ public class ResponseLongReservationJson
     public int Participants { get; set; }
     public long UserId { get; set; }
     public long RoomId { get; set; }
+    public string UserEmail { get; set; } = string.Empty;
 }

@@ -104,21 +104,46 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-MigrateDatabase();
+ExecutarMigracaoComRetry();
 
 app.Run();
 
-void MigrateDatabase()
+void ExecutarMigracaoComRetry()
 {
-    if (builder.Configuration.IsUnitTestEnviroment())
-        return;
+	using (IServiceScope escopo = app.Services.CreateScope())
+	{
+		string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
+		Console.WriteLine("CONNECTION STRING EM USO:");
+		Console.WriteLine(connectionString);
 
-    var connectionString = builder.Configuration.ConnectionString();
-    var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
+		int tentativaAtual = 1;
+		int maximoTentativas = 10;
+		bool sucesso = false;
 
-    DatabaseMigration.Migrate(connectionString, serviceScope.ServiceProvider);
+		while (tentativaAtual <= maximoTentativas && !sucesso)
+		{
+			try
+			{
+				// Linha onde ocorre o erro atualmente
+				DatabaseMigration.Migrate(connectionString, escopo.ServiceProvider);
+				sucesso = true;
+				Console.WriteLine("Conexão estabelecida e migração concluída!");
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"[Tentativa {tentativaAtual}/{maximoTentativas}] MySQL ainda iniciando. Aguardando 5 segundos...");
+				tentativaAtual++;
+
+				if (tentativaAtual > maximoTentativas)
+				{
+					throw new Exception("Não foi possível conectar ao MySQL após várias tentativas.", ex);
+				}
+
+				Thread.Sleep(5000);
+			}
+		}
+	}
 }
-
 
 public partial class Program
 {

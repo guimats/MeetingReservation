@@ -29,7 +29,7 @@ public static class RoomExtension
 	public static ResponseRoomJson MapToResponse(this Room room)
 	{
 		var reservations = room.Reservations?
-		.Select(reservation => reservation.MapToLongReservation())
+		.Select(reservation => reservation.MapToLongResponse())
 		.ToList()
 		?? new List<ResponseLongReservationJson>(); // caso reservation seja null
 

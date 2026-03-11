@@ -1,3 +1,5 @@
+using MeetingReservation.Domain.DTOs;
+
 namespace MeetingReservation.Domain.Repositories.Reservation;
 
 public interface IReservationWriteOnlyRepository

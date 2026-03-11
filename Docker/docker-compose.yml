@@ -1,0 +1,39 @@
+name: meeting-reservation-stack
+version: '3.8'
+
+services:
+  # Servidor de Banco de Dados
+  db:
+    image: mysql:8.0
+    container_name: mysql-container
+    restart: always
+    environment:
+      # Senha simplificada para evitar erros de escape de caracteres no terminal
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: meetingreservation
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  # Sua API .NET
+  meetingreservation.api:
+    container_name: meeting-reservation-api
+    image: ${DOCKER_REGISTRY-}meeting-reservation-api
+    build:
+      context: ..
+      dockerfile: src/Backend/MeetingReservation.API/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=db;Database=meetingreservation;Uid=root;Pwd=${MYSQL_ROOT_PASSWORD}
+      - Settings__Jwt__SigningKey=${JWT_SIGNING_KEY}
+      - Settings__Jwt__ExpirationTime=1500
+      - Settings__Jwt__Issuer=MeetingReservationApi
+      - Settings__Jwt__Audience=MeetingReservationClients
+    ports:
+      - "8081:8080"
+    depends_on:
+      - db
+
+volumes:
+    mysql_data:    

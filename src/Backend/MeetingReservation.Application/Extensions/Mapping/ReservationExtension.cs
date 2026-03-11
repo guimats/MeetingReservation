@@ -31,7 +31,7 @@ public static class ReservationExtension
         return reservation;
     }
 
-    public static ResponseLongReservationJson MapToLongReservation(this Reservation reservation)
+    public static ResponseLongReservationJson MapToLongResponse(this Reservation reservation)
     {
         return new ResponseLongReservationJson
         {
@@ -42,7 +42,29 @@ public static class ReservationExtension
             EndTime = reservation.EndTime,
             Participants = reservation.Participants,
             UserId = reservation.UserId,
-			RoomId = reservation.RoomId
+			RoomId = reservation.RoomId,
+            UserEmail = reservation.User!.Email
 		};
     }
+
+	public static ResponseShortReservationJson MapToShortResponse(this Reservation reservation)
+	{
+		return new ResponseShortReservationJson
+		{
+			Id = reservation.Id,
+			Name = reservation.Name,
+			Description = reservation.Description,
+			UserEmail = reservation.User!.Email
+		};
+	}
+
+	public static ResponseReservationsJson MapToReservationsResponse(this IList<Reservation> reservations)
+    {
+		var response = reservations.Select(res => res.MapToShortResponse()).ToList();
+
+		return new ResponseReservationsJson
+		{
+			Reservations = response
+		};
+	}
 }

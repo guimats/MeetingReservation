@@ -1,3 +1,4 @@
+using MeetingReservation.Domain.DTOs;
 using MeetingReservation.Domain.Entities;
 using MeetingReservation.Domain.Repositories.Reservation;
 using Microsoft.EntityFrameworkCore;
@@ -50,5 +51,21 @@ public class ReservationRepository : IReservationWriteOnlyRepository, IReservati
 		return await _dbContext.Reservations
 			.Where(res => res.RoomId == roomId)
 			.AnyAsync(res => initialTime < res.EndTime && endTime > res.InitialTime);
+	}
+
+	public async Task<IList<Reservation>> Filter(FilterReservationsDTO filter)
+	{
+		var query = _dbContext.Reservations.Where(res => res.Active);
+
+		if (string.IsNullOrWhiteSpace(filter.Name) is false)
+			query = query.Where(res => res.Name.Contains(filter.Name));
+		
+		if (string.IsNullOrWhiteSpace(filter.Description) is false)
+			query = query.Where(res => res.Description.Contains(filter.Description));
+
+		if (filter.MinParticipants > 0)
+			query = query.Where(res => res.Participants >= filter.MinParticipants);
+
+		return await query.Include(res => res.User).AsNoTracking().ToListAsync();
 	}
 }

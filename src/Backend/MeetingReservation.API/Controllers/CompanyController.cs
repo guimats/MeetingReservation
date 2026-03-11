@@ -1,6 +1,8 @@
 ﻿using MeetingReservation.API.Attributes;
+using MeetingReservation.Application.UseCases.Company.Delete;
 using MeetingReservation.Application.UseCases.Company.GetById;
 using MeetingReservation.Application.UseCases.Company.Register;
+using MeetingReservation.Application.UseCases.Company.Update;
 using MeetingReservation.Communication.Requests;
 using MeetingReservation.Communication.Responses;
 using Microsoft.AspNetCore.Mvc;
@@ -35,8 +37,23 @@ public class CompanyController : ControllerBase
 
 	[AuthenticatedUser]
 	[HttpPut]
-	public async Task<IActionResult> Update()
+	public async Task<IActionResult> Update(
+		[FromServices] IUpdateCompanyUseCase useCase,
+		[FromBody] RequestUpdateCompanyJson request)
 	{
-		throw new NotImplementedException();
+		await useCase.Execute(request);
+
+		return Ok();
+	}
+
+	[AuthenticatedUser]
+	[HttpDelete]
+	public async Task<IActionResult> Delete(
+		[FromServices] IDeleteCompanyUseCase useCase
+		)
+	{
+		await useCase.Execute();
+
+		return Ok();
 	}
 }

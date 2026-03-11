@@ -36,7 +36,7 @@ public class DeleteReservationUseCase : IDeleteReservationUseCase
         if (reservation is null)
             throw new NotFoundException(ResourceMessagesException.RESERVATION_NOT_FOUND);
 
-        if (!user.Id.Equals(reservation.UserId) && !user.Role.Equals(Role.Admin))
+        if (user.Id.Equals(reservation.UserId) == false || user.Role.Equals(Role.Admin) == false)
             throw new ForbiddenException();
 
         await _writeRepository.Delete(id);

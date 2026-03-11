@@ -33,7 +33,7 @@ public class GetReservationByIdUseCase : IGetReservationByIdUseCase
         if (reservation.UserId != user.Id && user.Role != Role.Admin)
             throw new ForbiddenException();
 
-        var response = reservation.MapToLongReservation();
+        var response = reservation.MapToLongResponse();
 
         return response;
     }
