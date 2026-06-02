@@ -13,15 +13,18 @@ namespace MeetingReservation.Application.UseCases.Reservation.Register;
 public class RegisterReservationUseCase : IRegisterReservationUseCase
 {
     private readonly IReservationWriteOnlyRepository _writeRepository;
+    private readonly IReservationReadOnlyRepository _readRepository;
     private readonly ILoggedUser _loggedUser;
     private readonly IUnitOfWork _unitOfWork;
 
     public RegisterReservationUseCase(
         IReservationWriteOnlyRepository writeRepository,
+        IReservationReadOnlyRepository readOnlyRepository,
         ILoggedUser loggedUser,
         IUnitOfWork unitOfWork)
     {
         _writeRepository = writeRepository;
+        _readRepository = readOnlyRepository;
         _loggedUser = loggedUser;
         _unitOfWork = unitOfWork;
     }
@@ -40,13 +43,11 @@ public class RegisterReservationUseCase : IRegisterReservationUseCase
 
         await _unitOfWork.Commit();
 
-        return new ResponseShortReservationJson
-        {
-            Id = reservation.Id,
-            Name = reservation.Name,
-            Description = reservation.Description,
-            UserEmail = reservation.User!.Email
-        };
+        reservation = await _readRepository.GetById(reservation.Id);
+
+        var response = reservation!.MapToShortResponse();
+
+        return response;
     }
 
     private async Task Validate(RequestReservationJson request)
@@ -55,7 +56,7 @@ public class RegisterReservationUseCase : IRegisterReservationUseCase
 
         var result = validator.Validate(request);
 
-        bool isOcuppied = await _writeRepository.IsTimeOccupied(request.RoomId, request.InitialTime, request.EndTime);
+        var isOcuppied = await _writeRepository.IsTimeOccupied(request.RoomId, request.InitialTime, request.EndTime);
 
         if (isOcuppied)
 		    throw new ErrorOnValidationException([ResourceMessagesException.RESERVATION_OCCUPIED]);

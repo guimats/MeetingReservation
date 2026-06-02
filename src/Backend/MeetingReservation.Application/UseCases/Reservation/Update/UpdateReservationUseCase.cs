@@ -46,13 +46,9 @@ public class UpdateReservationUseCase : IUpdateReservationUseCase
 
 		await _unitOfWork.Commit();
 
-		return new ResponseShortReservationJson
-		{
-			Id = reservation.Id,
-			Name = reservation.Name,
-			Description = reservation.Description,
-			UserEmail = reservation.User!.Email
-		};
+		var response = reservation.MapToShortResponse();
+
+        return response;
 	}
 
 	private async Task Validate(RequestReservationJson request)

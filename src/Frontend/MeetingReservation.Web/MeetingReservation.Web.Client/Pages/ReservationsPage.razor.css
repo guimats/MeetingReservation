@@ -1,0 +1,47 @@
+﻿/* Botões Principais com Gradiente */
+.btn-gradient {
+    background: linear-gradient(90deg, #0d6efd 0%, #0099ff 100%);
+    border: none;
+    color: #ffffff;
+    transition: all 0.3s ease;
+}
+
+    .btn-gradient:hover {
+        background: linear-gradient(90deg, #0b5ed7 0%, #0080ff 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3) !important;
+        color: #ffffff;
+    }
+
+/* Estilo base dos inputs */
+.form-control:focus {
+    box-shadow: none;
+    border-color: #0d6efd;
+}
+
+/* Estilo do Card da Reserva */
+.reserva-card {
+    transition: all 0.2s ease-in-out;
+    background-color: #ffffff;
+    border-left: 4px solid transparent !important;
+}
+
+    /* Efeito ao passar o mouse sobre o Card */
+    .reserva-card:hover {
+        background-color: #f4f7fb !important;
+        cursor: pointer;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08) !important;
+        border-left: 4px solid #0d6efd !important;
+    }
+
+/* Garante que o clique nos botões não afete o card inteiro futuramente */
+.acoes-container button {
+    position: relative;
+    z-index: 2;
+    transition: all 0.2s ease;
+}
+
+    .acoes-container button:hover {
+        transform: scale(1.05);
+    }

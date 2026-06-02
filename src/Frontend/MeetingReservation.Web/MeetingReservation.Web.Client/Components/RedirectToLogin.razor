@@ -1,0 +1,9 @@
+﻿@inject NavigationManager NavigationManager
+
+@code {
+    protected override void OnInitialized()
+    {
+        // Força o redirecionamento imediato para a rota de login
+        NavigationManager.NavigateTo("login");
+    }
+}

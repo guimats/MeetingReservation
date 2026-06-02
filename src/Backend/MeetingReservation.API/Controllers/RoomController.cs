@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MeetingReservation.API.Controllers;
 
-[AuthenticatedUser]
+//[AuthenticatedUser]
 [Route("[controller]")]
 [ApiController]
 public class RoomController : ControllerBase

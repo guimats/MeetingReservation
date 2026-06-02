@@ -10,7 +10,6 @@ public class ResponseLongReservationJson
     public DateTime InitialTime { get; set; }
     public DateTime EndTime { get; set; }
     public int Participants { get; set; }
-    public long UserId { get; set; }
-    public long RoomId { get; set; }
-    public string UserEmail { get; set; } = string.Empty;
+    public string UserName { get; set; } = string.Empty;
+    public string RoomName { get; set; } = string.Empty;
 }

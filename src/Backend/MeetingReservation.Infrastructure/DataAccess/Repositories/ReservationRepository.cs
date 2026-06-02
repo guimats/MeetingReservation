@@ -30,6 +30,8 @@ public class ReservationRepository : IReservationWriteOnlyRepository, IReservati
     {
         return await _dbContext
             .Reservations
+			.Include(res => res.User)
+			.Include(res => res.Room)
             .AsNoTracking()
             .FirstOrDefaultAsync(res => res.Id == id && res.Active);
     }
@@ -66,6 +68,10 @@ public class ReservationRepository : IReservationWriteOnlyRepository, IReservati
 		if (filter.MinParticipants > 0)
 			query = query.Where(res => res.Participants >= filter.MinParticipants);
 
-		return await query.Include(res => res.User).AsNoTracking().ToListAsync();
+		return await query
+			.Include(res => res.User)
+			.Include(res => res.Room)
+			.AsNoTracking()
+			.ToListAsync();
 	}
 }

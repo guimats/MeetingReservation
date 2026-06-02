@@ -24,8 +24,8 @@ public class MeetingReservationDbContext : DbContext
     {
 		modelBuilder.ApplyConfigurationsFromAssembly(typeof(MeetingReservationDbContext).Assembly);
 
-		modelBuilder.Entity<User>().HasQueryFilter(u => u.CompanyId == _tenantProvider.GetCompanyId());
-		modelBuilder.Entity<Reservation>().HasQueryFilter(r => r.CompanyId == _tenantProvider.GetCompanyId());
-		modelBuilder.Entity<Room>().HasQueryFilter(r => r.CompanyId == _tenantProvider.GetCompanyId());
+		//modelBuilder.Entity<User>().HasQueryFilter(u => u.CompanyId == _tenantProvider.GetCompanyId());
+		//modelBuilder.Entity<Reservation>().HasQueryFilter(r => r.CompanyId == _tenantProvider.GetCompanyId());
+		//modelBuilder.Entity<Room>().HasQueryFilter(r => r.CompanyId == _tenantProvider.GetCompanyId());
 	}
 }

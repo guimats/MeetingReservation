@@ -66,7 +66,7 @@ builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddHttpContextAccessor();
 
 var jwtSettings = builder.Configuration.GetSection("Settings:Jwt");
-var signingKey = jwtSettings["SigningKey"] ?? throw new InvalidOperationException("Settings:Jwt:SigningKey não configurado.");
+var signingKey = jwtSettings["SigningKey"] ?? throw new InvalidOperationException("Settings:Jwt:SigningKey nï¿½o configurado.");
 
 builder.Services.AddAuthentication(options =>
 {
@@ -87,6 +87,17 @@ builder.Services.AddAuthentication(options =>
 	};
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirFrontendBlazor", policy =>
+    {
+        // Coloque a URL onde o seu Blazor Web (o projeto hospedeiro) estÃ¡ rodando
+        policy.WithOrigins("http://localhost:7250")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -97,6 +108,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("PermitirFrontendBlazor");
 
 app.UseAuthentication();
 
@@ -127,7 +140,7 @@ void ExecutarMigracaoComRetry()
 				// Linha onde ocorre o erro atualmente
 				DatabaseMigration.Migrate(connectionString, escopo.ServiceProvider);
 				sucesso = true;
-				Console.WriteLine("Conexão estabelecida e migração concluída!");
+				Console.WriteLine("Conexï¿½o estabelecida e migraï¿½ï¿½o concluï¿½da!");
 			}
 			catch (Exception ex)
 			{
@@ -136,7 +149,7 @@ void ExecutarMigracaoComRetry()
 
 				if (tentativaAtual > maximoTentativas)
 				{
-					throw new Exception("Não foi possível conectar ao MySQL após várias tentativas.", ex);
+					throw new Exception("Nï¿½o foi possï¿½vel conectar ao MySQL apï¿½s vï¿½rias tentativas.", ex);
 				}
 
 				Thread.Sleep(5000);

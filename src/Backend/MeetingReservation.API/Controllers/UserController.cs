@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MeetingReservation.API.Controllers;
 
-[AuthenticatedUser]
 [Route("[controller]")]
 [ApiController]
 public class UserController : ControllerBase
@@ -28,6 +27,7 @@ public class UserController : ControllerBase
         return Created(string.Empty, result);
     }
 
+    [AuthenticatedUser]
     [HttpGet]
     [ProducesResponseType(typeof(ResponseUserProfileJson), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProfile([FromServices] IGetUserProfileUseCase useCase)
@@ -37,6 +37,7 @@ public class UserController : ControllerBase
         return Ok(result);
     }
 
+    [AuthenticatedUser]
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(ResponseUserProfileJson), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProfileById(
@@ -48,6 +49,7 @@ public class UserController : ControllerBase
         return Ok(result);
     }
 
+    [AuthenticatedUser]
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> DeleteById(
@@ -59,6 +61,7 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
+    [AuthenticatedUser]
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
@@ -71,6 +74,7 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
+    [AuthenticatedUser]
     [HttpPut("change-password")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ResponseErrorJson), StatusCodes.Status400BadRequest)]
@@ -83,7 +87,8 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
-	[HttpPost("filter")]
+    [AuthenticatedUser]
+    [HttpPost("filter")]
 	[ProducesResponseType(typeof(ResponseUsersJson), StatusCodes.Status200OK)]
 	public async Task<IActionResult> Filter(
 		[FromServices] IFilterUsersUseCase useCase,

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36414.22
+# Visual Studio Version 18
+VisualStudioVersion = 18.6.11806.211
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
@@ -37,7 +37,9 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "Docker\do
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{646F2C1D-A195-4B0F-B3BC-FA3571291825}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingReservation.Web", "MeetingReservation.Web\MeetingReservation.Web.csproj", "{F96D8C6C-E7EC-49C9-A0F1-C1491F80EA17}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingReservation.Web", "src\Frontend\MeetingReservation.Web\MeetingReservation.Web\MeetingReservation.Web.csproj", "{DCF8531A-418B-4305-8B34-3E94CBFD6B6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingReservation.Web.Client", "src\Frontend\MeetingReservation.Web\MeetingReservation.Web.Client\MeetingReservation.Web.Client.csproj", "{C4A88AC1-C6FC-4C78-932A-747D93BAA3DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,10 +91,14 @@ Global
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F96D8C6C-E7EC-49C9-A0F1-C1491F80EA17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F96D8C6C-E7EC-49C9-A0F1-C1491F80EA17}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F96D8C6C-E7EC-49C9-A0F1-C1491F80EA17}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F96D8C6C-E7EC-49C9-A0F1-C1491F80EA17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCF8531A-418B-4305-8B34-3E94CBFD6B6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCF8531A-418B-4305-8B34-3E94CBFD6B6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCF8531A-418B-4305-8B34-3E94CBFD6B6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCF8531A-418B-4305-8B34-3E94CBFD6B6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4A88AC1-C6FC-4C78-932A-747D93BAA3DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4A88AC1-C6FC-4C78-932A-747D93BAA3DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4A88AC1-C6FC-4C78-932A-747D93BAA3DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4A88AC1-C6FC-4C78-932A-747D93BAA3DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -112,7 +118,8 @@ Global
 		{0712EAAB-10BF-403A-BBC3-EF437290F1FC} = {D45E49A2-88A6-41C6-B31E-28F18EFD5A1D}
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A} = {C1383341-9AE5-4640-968B-44A857947390}
 		{646F2C1D-A195-4B0F-B3BC-FA3571291825} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
-		{F96D8C6C-E7EC-49C9-A0F1-C1491F80EA17} = {646F2C1D-A195-4B0F-B3BC-FA3571291825}
+		{DCF8531A-418B-4305-8B34-3E94CBFD6B6E} = {646F2C1D-A195-4B0F-B3BC-FA3571291825}
+		{C4A88AC1-C6FC-4C78-932A-747D93BAA3DD} = {646F2C1D-A195-4B0F-B3BC-FA3571291825}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D5A64DA4-1D0C-4229-807E-DDC7BD8C4D4F}

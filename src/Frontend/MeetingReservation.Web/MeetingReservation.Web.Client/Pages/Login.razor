@@ -1,0 +1,100 @@
+﻿@page "/login"
+@rendermode InteractiveWebAssembly
+
+@attribute [AllowAnonymous]
+
+@using MeetingReservation.Web.Client.Interfaces
+@using MeetingReservation.Web.Client.Layout
+@using MeetingReservation.Communication.Requests
+@using MeetingReservation.Communication.Responses
+
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+
+@layout LoginLayout
+
+<div class="vh-100 d-flex justify-content-center align-items-center bg-light" style="background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
+
+    <!-- Cartão com sombra maior (shadow-lg) e bordas mais arredondadas (rounded-4) -->
+    <div class="card shadow-lg border-0 rounded-4 p-4 p-md-5 w-100" style="max-width: 450px;">
+
+        <div class="text-center mb-4">
+            <!-- Ícone de calendário representando reservas -->
+            <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 rounded-circle text-primary mb-3" style="width: 60px; height: 60px;">
+                <i class="bi bi-calendar-check fs-2"></i>
+            </div>
+            <h1 class="h4 fw-bold text-dark mb-1">MeetingReservation</h1>
+            <p class="text-secondary">Bem-vindo de volta! Faça login na sua conta.</p>
+        </div>
+
+        <form @onsubmit="HandleLoginAsync">
+
+            <!-- Campo de E-mail com Ícone -->
+            <div class="mb-3">
+                <label for="email" class="form-label fw-semibold text-dark small">E-mail</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white text-muted border-end-0">
+                        <i class="bi bi-envelope"></i>
+                    </span>
+                    <input type="email" id="email" class="form-control border-start-0 ps-0" @bind-value="@RequestLogin.Email" required placeholder="seu@email.com" />
+                </div>
+            </div>
+
+            <!-- Campo de Senha com Ícone -->
+            <div class="mb-4">
+                <label for="password" class="form-label fw-semibold text-dark small">Senha</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white text-muted border-end-0">
+                        <i class="bi bi-lock"></i>
+                    </span>
+                    <input type="password" id="password" class="form-control border-start-0 ps-0" @bind-value="RequestLogin.Password" required placeholder="••••••••" />
+                </div>
+            </div>
+
+            <!-- Botão colorido com gradiente -->
+            <button type="submit" class="btn btn-login w-100 py-2 fw-bold text-white rounded-3 shadow-sm mb-3" @onclick="HandleLoginAsync">
+                Entrar no Sistema <i class="bi bi-box-arrow-in-right ms-2"></i>
+            </button>
+
+            @if (!string.IsNullOrEmpty(ErrorMessage))
+            {
+                <div class="alert alert-danger d-flex align-items-center p-2 text-center small rounded-3" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"></i>
+                    <div>@ErrorMessage</div>
+                </div>
+            }
+        </form>
+    </div>
+</div>
+
+@code {
+    private RequestLoginJson RequestLogin { get; set; } = new();
+    private ResponseTokensJson ResponseTokens { get; set; } = new();
+
+    private string ErrorMessage { get; set; } = string.Empty;
+
+    private async Task HandleLoginAsync()
+    {
+        ErrorMessage = string.Empty;
+
+        try
+        {
+            // O Blazor executará o método de login chamando a API
+            bool isSuccess = await AuthService.LoginAsync(RequestLogin);
+
+            if (isSuccess)
+            {
+                // Redireciona para a tela inicial (ou para a tela de reservas)
+                NavigationManager.NavigateTo("/reservas");
+            }
+            else
+            {
+                ErrorMessage = "E-mail ou senha incorretos. Verifique suas credenciais.";
+            }
+        }
+        catch
+        {
+            ErrorMessage = "Erro de conexão com o servidor. Tente novamente mais tarde.";
+        }
+    }
+}
