@@ -91,8 +91,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("PermitirFrontendBlazor", policy =>
     {
-        // Coloque a URL onde o seu Blazor Web (o projeto hospedeiro) está rodando
-        policy.WithOrigins("http://localhost:7250")
+        policy.WithOrigins(
+                "http://localhost:5128",
+                "https://localhost:7234",
+                "http://localhost:7250")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });

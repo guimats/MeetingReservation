@@ -1,0 +1,123 @@
+@page "/login"
+@layout LoginLayout
+
+@inject IAuthService AuthService
+@inject NavigationManager Navigation
+
+<PageTitle>Login — MeetingReservation</PageTitle>
+
+<div class="login-wrapper">
+    <div class="card border-0 shadow-lg login-card">
+
+        <div class="login-header text-center py-4 px-4">
+            <div class="login-icon mx-auto mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" viewBox="0 0 16 16">
+                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+                    <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-5 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
+                </svg>
+            </div>
+            <h4 class="text-white fw-bold mb-1">MeetingReservation</h4>
+            <p class="text-white-50 small mb-0">Sistema de Reserva de Salas</p>
+        </div>
+
+        <div class="card-body px-4 px-md-5 py-4">
+            <p class="text-center text-secondary small mb-4">Acesse sua conta para continuar</p>
+
+            <EditForm Model="@_model" OnValidSubmit="HandleLoginAsync">
+                <DataAnnotationsValidator />
+
+                <div class="mb-3">
+                    <label class="form-label fw-medium">E-mail</label>
+                    <InputText @bind-Value="_model.Email"
+                               class="form-control py-2"
+                               type="email"
+                               placeholder="seu@email.com"
+                               autocomplete="username" />
+                    <ValidationMessage For="@(() => _model.Email)" class="text-danger small" />
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-medium">Senha</label>
+                    <InputText @bind-Value="_model.Password"
+                               class="form-control py-2"
+                               type="password"
+                               placeholder="••••••••"
+                               autocomplete="current-password" />
+                    <ValidationMessage For="@(() => _model.Password)" class="text-danger small" />
+                </div>
+
+                @if (!string.IsNullOrEmpty(_errorMessage))
+                {
+                    <div class="alert alert-danger d-flex align-items-center gap-2 py-2 small mb-3" role="alert">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="flex-shrink-0" viewBox="0 0 16 16">
+                            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                        </svg>
+                        <span>@_errorMessage</span>
+                    </div>
+                }
+
+                <button type="submit" class="btn login-btn w-100 py-2 fw-semibold" disabled="@_isLoading">
+                    @if (_isLoading)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        <span>Entrando...</span>
+                    }
+                    else
+                    {
+                        <span>Entrar</span>
+                    }
+                </button>
+            </EditForm>
+        </div>
+
+        <div class="card-footer text-center py-3 bg-light border-0">
+            <small class="text-muted">© @DateTime.Now.Year MeetingReservation</small>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private LoginFormModel _model = new();
+    private string _errorMessage = string.Empty;
+    private bool _isLoading;
+
+    private async Task HandleLoginAsync()
+    {
+        _isLoading = true;
+        _errorMessage = string.Empty;
+
+        try
+        {
+            var success = await AuthService.LoginAsync(new RequestLoginJson
+            {
+                Email    = _model.Email,
+                Password = _model.Password
+            });
+
+            if (success)
+                Navigation.NavigateTo("/");
+            else
+                _errorMessage = "E-mail ou senha incorretos. Verifique suas credenciais.";
+        }
+        catch
+        {
+            _errorMessage = "Erro ao conectar com o servidor. Tente novamente.";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private class LoginFormModel
+    {
+        [Required(ErrorMessage = "Informe o e-mail")]
+        [EmailAddress(ErrorMessage = "E-mail inválido")]
+        public string Email { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Informe a senha")]
+        [MinLength(6, ErrorMessage = "A senha deve ter pelo menos 6 caracteres")]
+        public string Password { get; set; } = string.Empty;
+    }
+}

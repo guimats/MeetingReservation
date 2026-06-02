@@ -8,13 +8,18 @@ services:
     container_name: mysql-container
     restart: always
     environment:
-      # Senha simplificada para evitar erros de escape de caracteres no terminal
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: meetingreservation
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
   # Sua API .NET
   meetingreservation.api:
@@ -26,7 +31,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__DefaultConnection=Server=db;Database=meetingreservation;Uid=root;Pwd=${MYSQL_ROOT_PASSWORD}
+      - ConnectionStrings__DefaultConnection=Server=db;Database=meetingreservation;Uid=root;Pwd=${MYSQL_ROOT_PASSWORD};AllowPublicKeyRetrieval=True
       - Settings__Jwt__SigningKey=${JWT_SIGNING_KEY}
       - Settings__Jwt__ExpirationTime=1500
       - Settings__Jwt__Issuer=MeetingReservationApi
@@ -34,7 +39,8 @@ services:
     ports:
       - "8081:8080"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
 volumes:
     mysql_data:    
