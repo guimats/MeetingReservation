@@ -1,4 +1,5 @@
-﻿using MeetingReservation.Application.UseCases.Room.Delete;
+﻿using MeetingReservation.API.Attributes;
+using MeetingReservation.Application.UseCases.Room.Delete;
 using MeetingReservation.Application.UseCases.Room.Filter;
 using MeetingReservation.Application.UseCases.Room.GetById;
 using MeetingReservation.Application.UseCases.Room.Register;
@@ -9,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MeetingReservation.API.Controllers;
 
-//[AuthenticatedUser]
+[AuthenticatedUser]
 [Route("[controller]")]
 [ApiController]
 public class RoomController : ControllerBase

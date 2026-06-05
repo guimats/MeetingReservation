@@ -1,49 +1,71 @@
-@page "/login"
+@page "/register"
 @layout LoginLayout
 
 @inject IAuthService AuthService
 @inject NavigationManager Navigation
 
-<PageTitle>Login — MeetingReservation</PageTitle>
+@using System.ComponentModel.DataAnnotations
 
-<div class="login-wrapper">
-    <div class="card border-0 shadow-lg login-card">
+<PageTitle>Cadastrar Empresa — MeetingReservation</PageTitle>
 
-        <div class="login-header text-center py-4 px-4">
-            <div class="login-icon mx-auto mb-3">
+<div class="register-wrapper">
+    <div class="card border-0 shadow-lg register-card">
+
+        <div class="register-header text-center py-4 px-4">
+            <div class="register-icon mx-auto mb-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="white" viewBox="0 0 16 16">
                     <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
                     <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-5 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
                 </svg>
             </div>
             <h4 class="text-white fw-bold mb-1">MeetingReservation</h4>
-            <p class="text-white-50 small mb-0">Sistema de Reserva de Salas</p>
+            <p class="text-white-50 small mb-0">Cadastre sua empresa para começar</p>
         </div>
 
         <div class="card-body px-4 px-md-5 py-4">
-            <p class="text-center text-secondary small mb-4">Acesse sua conta para continuar</p>
+            <p class="text-center text-secondary small mb-4">Preencha os dados da empresa e do administrador</p>
 
-            <EditForm Model="@_model" OnValidSubmit="HandleLoginAsync">
+            <EditForm Model="@_model" OnValidSubmit="HandleRegisterAsync">
                 <DataAnnotationsValidator />
+
+                <h6 class="fw-semibold text-secondary mb-3 text-uppercase small">Dados da Empresa</h6>
+
+                <div class="mb-3">
+                    <label class="form-label fw-medium">Nome da Empresa</label>
+                    <InputText @bind-Value="_model.CompanyName"
+                               class="form-control py-2"
+                               placeholder="Empresa Ltda" />
+                    <ValidationMessage For="@(() => _model.CompanyName)" class="text-danger small" />
+                </div>
+
+                <h6 class="fw-semibold text-secondary mb-3 mt-4 text-uppercase small">Dados do Administrador</h6>
+
+                <div class="mb-3">
+                    <label class="form-label fw-medium">Nome</label>
+                    <InputText @bind-Value="_model.UserName"
+                               class="form-control py-2"
+                               placeholder="Nome completo" />
+                    <ValidationMessage For="@(() => _model.UserName)" class="text-danger small" />
+                </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-medium">E-mail</label>
-                    <InputText @bind-Value="_model.Email"
+                    <InputText @bind-Value="_model.UserEmail"
                                class="form-control py-2"
                                type="email"
                                placeholder="seu@email.com"
                                autocomplete="username" />
-                    <ValidationMessage For="@(() => _model.Email)" class="text-danger small" />
+                    <ValidationMessage For="@(() => _model.UserEmail)" class="text-danger small" />
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label fw-medium">Senha</label>
-                    <InputText @bind-Value="_model.Password"
+                    <InputText @bind-Value="_model.UserPassword"
                                class="form-control py-2"
                                type="password"
                                placeholder="••••••••"
-                               autocomplete="current-password" />
-                    <ValidationMessage For="@(() => _model.Password)" class="text-danger small" />
+                               autocomplete="new-password" />
+                    <ValidationMessage For="@(() => _model.UserPassword)" class="text-danger small" />
                 </div>
 
                 @if (!string.IsNullOrEmpty(_errorMessage))
@@ -56,15 +78,15 @@
                     </div>
                 }
 
-                <button type="submit" class="btn login-btn w-100 py-2 fw-semibold" disabled="@_isLoading">
+                <button type="submit" class="btn register-btn w-100 py-2 fw-semibold" disabled="@_isLoading">
                     @if (_isLoading)
                     {
                         <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                        <span>Entrando...</span>
+                        <span>Cadastrando...</span>
                     }
                     else
                     {
-                        <span>Entrar</span>
+                        <span>Cadastrar</span>
                     }
                 </button>
             </EditForm>
@@ -72,8 +94,8 @@
 
         <div class="card-footer text-center py-3 bg-light border-0">
             <small class="text-muted">
-                Não tem conta?
-                <a href="/register" class="text-primary fw-medium text-decoration-none">Cadastrar empresa</a>
+                Já tem conta?
+                <a href="/login" class="text-primary fw-medium text-decoration-none">Entrar</a>
             </small>
         </div>
 
@@ -81,27 +103,29 @@
 </div>
 
 @code {
-    private LoginFormModel _model = new();
+    private RegisterFormModel _model = new();
     private string _errorMessage = string.Empty;
     private bool _isLoading;
 
-    private async Task HandleLoginAsync()
+    private async Task HandleRegisterAsync()
     {
         _isLoading = true;
         _errorMessage = string.Empty;
 
         try
         {
-            var success = await AuthService.LoginAsync(new RequestLoginJson
+            var success = await AuthService.RegisterCompanyAsync(new RequestRegisterCompanyJson
             {
-                Email    = _model.Email,
-                Password = _model.Password
+                Name         = _model.CompanyName,
+                UserName     = _model.UserName,
+                UserEmail    = _model.UserEmail,
+                UserPassword = _model.UserPassword
             });
 
             if (success)
                 Navigation.NavigateTo("/");
             else
-                _errorMessage = "E-mail ou senha incorretos. Verifique suas credenciais.";
+                _errorMessage = "Não foi possível cadastrar a empresa. Verifique os dados e tente novamente.";
         }
         catch
         {
@@ -113,14 +137,22 @@
         }
     }
 
-    private class LoginFormModel
+    private class RegisterFormModel
     {
+        [Required(ErrorMessage = "Informe o nome da empresa")]
+        [MinLength(2, ErrorMessage = "O nome da empresa deve ter pelo menos 2 caracteres")]
+        public string CompanyName { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Informe o nome do administrador")]
+        [MinLength(2, ErrorMessage = "O nome deve ter pelo menos 2 caracteres")]
+        public string UserName { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "Informe o e-mail")]
         [EmailAddress(ErrorMessage = "E-mail inválido")]
-        public string Email { get; set; } = string.Empty;
+        public string UserEmail { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Informe a senha")]
         [MinLength(6, ErrorMessage = "A senha deve ter pelo menos 6 caracteres")]
-        public string Password { get; set; } = string.Empty;
+        public string UserPassword { get; set; } = string.Empty;
     }
 }

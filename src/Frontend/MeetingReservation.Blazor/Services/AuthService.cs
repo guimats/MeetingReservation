@@ -43,6 +43,26 @@ public class AuthService : IAuthService
         return true;
     }
 
+    public async Task<bool> RegisterCompanyAsync(RequestRegisterCompanyJson request)
+    {
+        var response = await _httpClient.PostAsJsonAsync("company", request);
+
+        if (!response.IsSuccessStatusCode)
+            return false;
+
+        var registerResponse = await response.Content.ReadFromJsonAsync<ResponseRegisteredUserJson>();
+
+        if (registerResponse?.Tokens is null)
+            return false;
+
+        await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "accessToken", registerResponse.Tokens.AccessToken);
+        await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "refreshToken", registerResponse.Tokens.RefreshToken);
+
+        ((CustomAuthenticationStateProvider)_authStateProvider).NotifyUserLogin(registerResponse.Tokens.AccessToken);
+
+        return true;
+    }
+
     public async Task LogoutAsync()
     {
         await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", "accessToken");

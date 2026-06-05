@@ -1,0 +1,61 @@
+.register-wrapper {
+    width: 100%;
+    max-width: 480px;
+}
+
+.register-card {
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.register-header {
+    background: linear-gradient(145deg, #0a2647 0%, #144272 55%, #1565c0 100%);
+}
+
+.register-icon {
+    width: 64px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+::deep .form-control {
+    border-color: #d0dff0;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+::deep .form-control:focus {
+    border-color: #1565c0;
+    box-shadow: 0 0 0 0.2rem rgba(21, 101, 192, 0.18);
+}
+
+.register-btn {
+    background: linear-gradient(135deg, #1565c0 0%, #1e88e5 100%);
+    border: none;
+    color: white;
+    letter-spacing: 0.3px;
+    border-radius: 8px;
+    transition: opacity 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.register-btn:hover:not(:disabled) {
+    opacity: 0.92;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(21, 101, 192, 0.4);
+}
+
+.register-btn:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.register-btn:disabled {
+    background: linear-gradient(135deg, #1565c0 0%, #1e88e5 100%);
+    color: white;
+    opacity: 0.65;
+}
