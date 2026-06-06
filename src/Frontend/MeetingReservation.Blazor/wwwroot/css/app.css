@@ -2,6 +2,64 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+/* ── Shared button ── */
+.btn-primary-custom {
+    background: linear-gradient(135deg, #1565c0, #1e88e5);
+    border: none;
+    color: white;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: opacity 0.15s ease, transform 0.1s ease;
+}
+
+.btn-primary-custom:hover {
+    opacity: 0.9;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-primary-custom:active {
+    transform: translateY(0);
+}
+
+.btn-primary-custom:disabled {
+    opacity: 0.65;
+    transform: none;
+}
+
+/* ── Shared modal layout ── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 38, 71, 0.45);
+    backdrop-filter: blur(2px);
+    z-index: 1040;
+}
+
+.modal-wrapper {
+    position: fixed;
+    inset: 0;
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    pointer-events: none;
+}
+
+.modal-card {
+    width: 100%;
+    max-width: 460px;
+    border-radius: 14px;
+    overflow: hidden;
+    pointer-events: all;
+}
+
+.modal-card--sm {
+    max-width: 380px;
+}
+
 h1:focus {
     outline: none;
 }
