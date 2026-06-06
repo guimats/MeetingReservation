@@ -1,0 +1,364 @@
+@page "/usuarios"
+@using MeetingReservation.Domain.Enums
+
+@inject IUserService UserService
+
+<PageTitle>Usuários — MeetingReservation</PageTitle>
+
+<div class="usuarios-page">
+
+    <div class="page-header d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h4 class="page-title mb-1">Usuários</h4>
+            <p class="page-subtitle mb-0">Gerencie os usuários da sua empresa</p>
+        </div>
+        <button class="btn btn-primary-custom d-flex align-items-center gap-2" @onclick="OpenAddModal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+            </svg>
+            Novo Usuário
+        </button>
+    </div>
+
+    <div class="card border-0 shadow-sm filter-card mb-4">
+        <div class="card-body py-3">
+            <div class="row g-2 align-items-end">
+                <div class="col-12 col-md-4">
+                    <label class="form-label fw-medium small mb-1">Nome</label>
+                    <input type="text" class="form-control form-control-sm"
+                           placeholder="Buscar por nome..."
+                           @bind="_filter.Name" />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label fw-medium small mb-1">E-mail</label>
+                    <input type="text" class="form-control form-control-sm"
+                           placeholder="Buscar por e-mail..."
+                           @bind="_filter.Email" />
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label fw-medium small mb-1">Função</label>
+                    <select class="form-select form-select-sm" @bind="_filter.Role">
+                        <option value="">Todas</option>
+                        <option value="@Role.User">Usuário</option>
+                        <option value="@Role.Admin">Administrador</option>
+                    </select>
+                </div>
+                <div class="col-6 col-md-2 d-flex gap-2">
+                    <button class="btn btn-primary-custom btn-sm flex-fill" @onclick="SearchAsync">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.099zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                        Buscar
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm flex-fill" @onclick="ClearFilterAsync">
+                        Limpar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            @if (_isLoading)
+            {
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary spinner-border-sm" role="status">
+                        <span class="visually-hidden">Carregando...</span>
+                    </div>
+                    <p class="text-muted small mt-2 mb-0">Carregando usuários...</p>
+                </div>
+            }
+            else if (!string.IsNullOrEmpty(_listError))
+            {
+                <div class="text-center py-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="#dee2e6" class="mb-3" viewBox="0 0 16 16">
+                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    </svg>
+                    <p class="text-danger small mb-0">@_listError</p>
+                </div>
+            }
+            else if (_users.Count == 0)
+            {
+                <div class="text-center py-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="#dee2e6" class="mb-3" viewBox="0 0 16 16">
+                        <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                        <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
+                        <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
+                    </svg>
+                    <p class="text-muted mb-1 fw-medium">Nenhum usuário encontrado</p>
+                    <small class="text-muted">Ajuste os filtros ou cadastre um novo usuário.</small>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 users-table">
+                        <thead>
+                            <tr>
+                                <th class="ps-4">Nome</th>
+                                <th>E-mail</th>
+                                <th>Função</th>
+                                <th class="text-end pe-4">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var user in _users)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="user-icon-badge">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                                    <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
+                                                    <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
+                                                </svg>
+                                            </div>
+                                            <span class="fw-medium">@user.Name</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted small">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                                                <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+                                            </svg>
+                                            @user.Email
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="role-badge @(user.Role == nameof(Role.Admin) ? "role-badge--admin" : "")">
+                                            @RoleLabel(user.Role)
+                                        </span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <button class="btn btn-icon btn-delete" title="Excluir usuário"
+                                                @onclick="() => ConfirmDelete(user)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+</div>
+
+<FormModal Model="@_newUser"
+           Title="Novo Usuário"
+           SubmitLabel="Cadastrar Usuário"
+           IsVisible="_showAddModal"
+           IsLoading="_isSaving"
+           ErrorMessage="@_modalError"
+           OnClose="CloseAddModal"
+           OnSubmit="HandleAddUserAsync">
+    <Icon>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16">
+            <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+            <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
+            <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
+        </svg>
+    </Icon>
+    <Fields>
+        <div class="mb-3">
+            <label class="form-label fw-medium">Nome</label>
+            <InputText @bind-Value="_newUser.Name"
+                       class="form-control py-2"
+                       placeholder="Nome completo" />
+            <ValidationMessage For="@(() => _newUser.Name)" class="text-danger small" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-medium">E-mail</label>
+            <InputText @bind-Value="_newUser.Email"
+                       class="form-control py-2"
+                       type="email"
+                       placeholder="usuario@empresa.com" />
+            <ValidationMessage For="@(() => _newUser.Email)" class="text-danger small" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-medium">Senha</label>
+            <InputText @bind-Value="_newUser.Password"
+                       class="form-control py-2"
+                       type="password"
+                       placeholder="••••••••"
+                       autocomplete="new-password" />
+            <ValidationMessage For="@(() => _newUser.Password)" class="text-danger small" />
+        </div>
+        <div class="mb-4">
+            <label class="form-label fw-medium">Função</label>
+            <InputSelect @bind-Value="_newUser.Role" class="form-select py-2">
+                <option value="@Role.User">Usuário</option>
+                <option value="@Role.Admin">Administrador</option>
+            </InputSelect>
+            <ValidationMessage For="@(() => _newUser.Role)" class="text-danger small" />
+        </div>
+    </Fields>
+</FormModal>
+
+@if (_userToDelete is not null)
+{
+    <DeleteConfirmationModal IsVisible="_showDeleteModal"
+                             Title="Excluir usuário?"
+                             IsLoading="_isDeleting"
+                             OnClose="CloseDeleteModal"
+                             OnConfirm="ExecuteDeleteAsync">
+        O usuário <strong>@_userToDelete.Name</strong> será removido permanentemente e não poderá ser recuperado.
+    </DeleteConfirmationModal>
+}
+
+@code {
+    private List<ResponseUserProfileJson> _users = [];
+    private RequestFilterUsersJson _filter = new();
+    private bool _isLoading;
+    private string _listError = string.Empty;
+
+    private bool _showAddModal;
+    private UserFormModel _newUser = new();
+    private bool _isSaving;
+    private string _modalError = string.Empty;
+
+    private bool _showDeleteModal;
+    private ResponseUserProfileJson? _userToDelete;
+    private bool _isDeleting;
+
+    protected override async Task OnInitializedAsync()
+        => await LoadUsersAsync();
+
+    private async Task LoadUsersAsync()
+    {
+        _isLoading = true;
+        _listError = string.Empty;
+
+        try
+        {
+            _users = await UserService.FilterUsersAsync(_filter);
+        }
+        catch
+        {
+            _listError = "Não foi possível carregar os usuários. Tente novamente.";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task SearchAsync() => await LoadUsersAsync();
+
+    private async Task ClearFilterAsync()
+    {
+        _filter = new();
+        await LoadUsersAsync();
+    }
+
+    private void OpenAddModal()
+    {
+        _newUser = new();
+        _modalError = string.Empty;
+        _showAddModal = true;
+    }
+
+    private void CloseAddModal() => _showAddModal = false;
+
+    private async Task HandleAddUserAsync()
+    {
+        _isSaving = true;
+        _modalError = string.Empty;
+
+        try
+        {
+            var success = await UserService.CreateUserAsync(new RequestRegisterUserJson
+            {
+                Name = _newUser.Name,
+                Email = _newUser.Email,
+                Password = _newUser.Password,
+                Role = _newUser.Role
+            });
+
+            if (success)
+            {
+                _showAddModal = false;
+                await LoadUsersAsync();
+            }
+            else
+            {
+                _modalError = "Não foi possível cadastrar o usuário. Verifique os dados e tente novamente.";
+            }
+        }
+        catch
+        {
+            _modalError = "Erro ao conectar com o servidor. Tente novamente.";
+        }
+        finally
+        {
+            _isSaving = false;
+        }
+    }
+
+    private void ConfirmDelete(ResponseUserProfileJson user)
+    {
+        _userToDelete = user;
+        _showDeleteModal = true;
+    }
+
+    private void CloseDeleteModal()
+    {
+        _showDeleteModal = false;
+        _userToDelete = null;
+    }
+
+    private async Task ExecuteDeleteAsync()
+    {
+        if (_userToDelete is null) return;
+
+        _isDeleting = true;
+
+        try
+        {
+            var success = await UserService.DeleteUserAsync(_userToDelete.Id);
+
+            if (success)
+            {
+                _showDeleteModal = false;
+                _userToDelete = null;
+                await LoadUsersAsync();
+            }
+        }
+        catch { }
+        finally
+        {
+            _isDeleting = false;
+        }
+    }
+
+    private static string RoleLabel(string role) => role switch
+    {
+        nameof(Role.Admin) => "Administrador",
+        nameof(Role.User) => "Usuário",
+        _ => role
+    };
+
+    private class UserFormModel
+    {
+        [Required(ErrorMessage = "Informe o nome do usuário")]
+        [MinLength(2, ErrorMessage = "O nome deve ter pelo menos 2 caracteres")]
+        public string Name { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Informe o e-mail")]
+        [EmailAddress(ErrorMessage = "E-mail inválido")]
+        public string Email { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Informe a senha")]
+        [MinLength(6, ErrorMessage = "A senha deve ter pelo menos 6 caracteres")]
+        public string Password { get; set; } = string.Empty;
+
+        public Role Role { get; set; } = Role.User;
+    }
+}
