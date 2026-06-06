@@ -1,0 +1,361 @@
+@page "/salas"
+
+@inject IRoomService RoomService
+
+<PageTitle>Salas — MeetingReservation</PageTitle>
+
+<div class="salas-page">
+
+    <div class="page-header d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h4 class="page-title mb-1">Salas</h4>
+            <p class="page-subtitle mb-0">Gerencie as salas de reunião cadastradas</p>
+        </div>
+        <button class="btn btn-primary-custom d-flex align-items-center gap-2" @onclick="OpenAddModal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+            </svg>
+            Nova Sala
+        </button>
+    </div>
+
+    <div class="card border-0 shadow-sm filter-card mb-4">
+        <div class="card-body py-3">
+            <div class="row g-2 align-items-end">
+                <div class="col-12 col-md-4">
+                    <label class="form-label fw-medium small mb-1">Nome</label>
+                    <input type="text" class="form-control form-control-sm"
+                           placeholder="Buscar por nome..."
+                           @bind="_filter.Name" />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label fw-medium small mb-1">Localização</label>
+                    <input type="text" class="form-control form-control-sm"
+                           placeholder="Buscar por localização..."
+                           @bind="_filter.Location" />
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label fw-medium small mb-1">Capacidade mín.</label>
+                    <input type="number" class="form-control form-control-sm"
+                           placeholder="Ex: 10" min="1"
+                           @bind="_filter.Capacity" />
+                </div>
+                <div class="col-6 col-md-2 d-flex gap-2">
+                    <button class="btn btn-primary-custom btn-sm flex-fill" @onclick="SearchAsync">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.099zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                        Buscar
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm flex-fill" @onclick="ClearFilterAsync">
+                        Limpar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            @if (_isLoading)
+            {
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary spinner-border-sm" role="status">
+                        <span class="visually-hidden">Carregando...</span>
+                    </div>
+                    <p class="text-muted small mt-2 mb-0">Carregando salas...</p>
+                </div>
+            }
+            else if (!string.IsNullOrEmpty(_listError))
+            {
+                <div class="text-center py-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="#dee2e6" class="mb-3" viewBox="0 0 16 16">
+                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    </svg>
+                    <p class="text-danger small mb-0">@_listError</p>
+                </div>
+            }
+            else if (_rooms.Count == 0)
+            {
+                <div class="text-center py-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="#dee2e6" class="mb-3" viewBox="0 0 16 16">
+                        <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3A1.5 1.5 0 0 1 15 10.5v3A1.5 1.5 0 0 1 13.5 15h-3A1.5 1.5 0 0 1 9 13.5v-3z"/>
+                    </svg>
+                    <p class="text-muted mb-1 fw-medium">Nenhuma sala encontrada</p>
+                    <small class="text-muted">Ajuste os filtros ou cadastre uma nova sala.</small>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 rooms-table">
+                        <thead>
+                            <tr>
+                                <th class="ps-4">Nome</th>
+                                <th>Capacidade</th>
+                                <th>Localização</th>
+                                <th class="text-end pe-4">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var room in _rooms)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="room-icon-badge">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3A1.5 1.5 0 0 1 15 10.5v3A1.5 1.5 0 0 1 13.5 15h-3A1.5 1.5 0 0 1 9 13.5v-3z"/>
+                                                </svg>
+                                            </div>
+                                            <span class="fw-medium">@room.Name</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="capacity-badge">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                                                <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                                <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
+                                                <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
+                                            </svg>
+                                            @room.Capacity pessoas
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted small">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                                                <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                                            </svg>
+                                            @room.Location
+                                        </span>
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <button class="btn btn-icon btn-delete" title="Excluir sala"
+                                                @onclick="() => ConfirmDelete(room)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+</div>
+
+<FormModal Model="@_newRoom"
+           Title="Nova Sala"
+           SubmitLabel="Cadastrar Sala"
+           IsVisible="_showAddModal"
+           IsLoading="_isSaving"
+           ErrorMessage="@_modalError"
+           OnClose="CloseAddModal"
+           OnSubmit="HandleAddRoomAsync">
+    <Icon>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16">
+            <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3A1.5 1.5 0 0 1 15 10.5v3A1.5 1.5 0 0 1 13.5 15h-3A1.5 1.5 0 0 1 9 13.5v-3z"/>
+        </svg>
+    </Icon>
+    <Fields>
+        <div class="mb-3">
+            <label class="form-label fw-medium">Nome da Sala</label>
+            <InputText @bind-Value="_newRoom.Name"
+                       class="form-control py-2"
+                       placeholder="Ex: Sala de Reuniões A" />
+            <ValidationMessage For="@(() => _newRoom.Name)" class="text-danger small" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-medium">Capacidade</label>
+            <InputNumber @bind-Value="_newRoom.Capacity"
+                         class="form-control py-2"
+                         placeholder="Número de pessoas" />
+            <ValidationMessage For="@(() => _newRoom.Capacity)" class="text-danger small" />
+        </div>
+        <div class="mb-4">
+            <label class="form-label fw-medium">Localização</label>
+            <InputText @bind-Value="_newRoom.Location"
+                       class="form-control py-2"
+                       placeholder="Ex: 2º Andar, Bloco B" />
+            <ValidationMessage For="@(() => _newRoom.Location)" class="text-danger small" />
+        </div>
+    </Fields>
+</FormModal>
+
+@if (_showDeleteModal && _roomToDelete is not null)
+{
+    <div class="modal-overlay" @onclick="CloseDeleteModal"></div>
+    <div class="modal-wrapper">
+        <div class="card border-0 shadow-lg modal-card modal-card--sm">
+            <div class="card-body px-4 py-4 text-center">
+                <div class="delete-icon-circle mx-auto mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#dc3545" viewBox="0 0 16 16">
+                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                    </svg>
+                </div>
+                <h5 class="fw-semibold mb-1">Excluir sala?</h5>
+                <p class="text-muted small mb-4">
+                    A sala <strong>@_roomToDelete.Name</strong> será removida permanentemente e não poderá ser recuperada.
+                </p>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary flex-fill py-2" @onclick="CloseDeleteModal">
+                        Cancelar
+                    </button>
+                    <button class="btn btn-danger flex-fill py-2 fw-semibold"
+                            @onclick="ExecuteDeleteAsync" disabled="@_isDeleting">
+                        @if (_isDeleting)
+                        {
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        }
+                        Excluir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<ResponseShortRoomJson> _rooms = [];
+    private RequestFilterRoomsJson _filter = new();
+    private bool _isLoading;
+    private string _listError = string.Empty;
+
+    private bool _showAddModal;
+    private RoomFormModel _newRoom = new();
+    private bool _isSaving;
+    private string _modalError = string.Empty;
+
+    private bool _showDeleteModal;
+    private ResponseShortRoomJson? _roomToDelete;
+    private bool _isDeleting;
+
+    protected override async Task OnInitializedAsync()
+        => await LoadRoomsAsync();
+
+    private async Task LoadRoomsAsync()
+    {
+        _isLoading = true;
+        _listError = string.Empty;
+
+        try
+        {
+            _rooms = await RoomService.FilterRoomsAsync(_filter);
+        }
+        catch
+        {
+            _listError = "Não foi possível carregar as salas. Tente novamente.";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task SearchAsync() => await LoadRoomsAsync();
+
+    private async Task ClearFilterAsync()
+    {
+        _filter = new();
+        await LoadRoomsAsync();
+    }
+
+    private void OpenAddModal()
+    {
+        _newRoom = new();
+        _modalError = string.Empty;
+        _showAddModal = true;
+    }
+
+    private void CloseAddModal() => _showAddModal = false;
+
+    private async Task HandleAddRoomAsync()
+    {
+        _isSaving = true;
+        _modalError = string.Empty;
+
+        try
+        {
+            var success = await RoomService.CreateRoomAsync(new RequestRoomJson
+            {
+                Name = _newRoom.Name,
+                Capacity = _newRoom.Capacity,
+                Location = _newRoom.Location
+            });
+
+            if (success)
+            {
+                _showAddModal = false;
+                await LoadRoomsAsync();
+            }
+            else
+            {
+                _modalError = "Não foi possível cadastrar a sala. Verifique os dados e tente novamente.";
+            }
+        }
+        catch
+        {
+            _modalError = "Erro ao conectar com o servidor. Tente novamente.";
+        }
+        finally
+        {
+            _isSaving = false;
+        }
+    }
+
+    private void ConfirmDelete(ResponseShortRoomJson room)
+    {
+        _roomToDelete = room;
+        _showDeleteModal = true;
+    }
+
+    private void CloseDeleteModal()
+    {
+        _showDeleteModal = false;
+        _roomToDelete = null;
+    }
+
+    private async Task ExecuteDeleteAsync()
+    {
+        if (_roomToDelete is null) return;
+
+        _isDeleting = true;
+
+        try
+        {
+            var success = await RoomService.DeleteRoomAsync(_roomToDelete.Id);
+
+            if (success)
+            {
+                _showDeleteModal = false;
+                _roomToDelete = null;
+                await LoadRoomsAsync();
+            }
+        }
+        catch { }
+        finally
+        {
+            _isDeleting = false;
+        }
+    }
+
+    private class RoomFormModel
+    {
+        [Required(ErrorMessage = "Informe o nome da sala")]
+        [MinLength(2, ErrorMessage = "O nome deve ter pelo menos 2 caracteres")]
+        public string Name { get; set; } = string.Empty;
+
+        [Range(1, 1000, ErrorMessage = "A capacidade deve ser entre 1 e 1000")]
+        public int Capacity { get; set; }
+
+        [Required(ErrorMessage = "Informe a localização da sala")]
+        [MinLength(2, ErrorMessage = "A localização deve ter pelo menos 2 caracteres")]
+        public string Location { get; set; } = string.Empty;
+    }
+}
