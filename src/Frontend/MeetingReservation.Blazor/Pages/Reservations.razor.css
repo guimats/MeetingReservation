@@ -1,0 +1,131 @@
+.reservations-page {
+    max-width: 1200px;
+}
+
+/* ── Header ── */
+.page-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #0a2647;
+}
+
+.page-subtitle {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+/* ── Filter card ── */
+.filter-card {
+    border-radius: 12px;
+}
+
+.filter-card .form-control {
+    border-radius: 8px;
+    border-color: #dee2e6;
+    font-size: 0.85rem;
+}
+
+.filter-card .form-control:focus {
+    border-color: #1565c0;
+    box-shadow: 0 0 0 0.2rem rgba(21, 101, 192, 0.15);
+}
+
+/* ── Table card ── */
+.card {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.reservations-table thead th {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6c757d;
+    border-bottom: 1px solid #f0f0f0;
+    background-color: #fafbfc;
+    padding-top: 0.875rem;
+    padding-bottom: 0.875rem;
+}
+
+.reservations-table tbody tr {
+    transition: background-color 0.12s ease;
+}
+
+.reservations-table tbody tr:last-child > * {
+    border-bottom-width: 0;
+}
+
+.reservations-table tbody td {
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
+    font-size: 0.875rem;
+}
+
+.reservation-description {
+    max-width: 240px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ── Reservation icon badge ── */
+.reservation-icon-badge {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(21, 101, 192, 0.1), rgba(30, 136, 229, 0.15));
+    color: #1565c0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* ── Capacity badge (participants) ── */
+.capacity-badge {
+    display: inline-flex;
+    align-items: center;
+    background-color: #f0f4ff;
+    color: #1565c0;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 0.25rem 0.65rem;
+    border-radius: 20px;
+}
+
+/* ── Action buttons ── */
+.btn-icon {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-delete {
+    background-color: transparent;
+    color: #adb5bd;
+    border-color: transparent;
+}
+
+.btn-delete:hover {
+    background-color: #fff1f1;
+    border-color: #ffcdd2;
+    color: #dc3545;
+}
+
+/* ── Delete confirmation modal ── */
+.delete-icon-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: #fff1f1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -1,0 +1,423 @@
+@page "/reservas"
+
+@inject IReservationService ReservationService
+@inject IRoomService RoomService
+
+<PageTitle>Reservas — MeetingReservation</PageTitle>
+
+<div class="reservations-page">
+
+    <div class="page-header d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h4 class="page-title mb-1">Reservas</h4>
+            <p class="page-subtitle mb-0">Gerencie as reservas das salas de reunião</p>
+        </div>
+        <button class="btn btn-primary-custom d-flex align-items-center gap-2" @onclick="OpenAddModal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+            </svg>
+            Nova Reserva
+        </button>
+    </div>
+
+    <div class="card border-0 shadow-sm filter-card mb-4">
+        <div class="card-body py-3">
+            <div class="row g-2 align-items-end">
+                <div class="col-12 col-md-4">
+                    <label class="form-label fw-medium small mb-1">Nome</label>
+                    <input type="text" class="form-control form-control-sm"
+                           placeholder="Buscar por nome..."
+                           @bind="_filter.Name" />
+                </div>
+                <div class="col-12 col-md-4">
+                    <label class="form-label fw-medium small mb-1">Descrição</label>
+                    <input type="text" class="form-control form-control-sm"
+                           placeholder="Buscar por descrição..."
+                           @bind="_filter.Description" />
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label fw-medium small mb-1">Participantes mín.</label>
+                    <input type="number" class="form-control form-control-sm"
+                           placeholder="Ex: 5" min="1"
+                           @bind="_filter.MinParticipants" />
+                </div>
+                <div class="col-6 col-md-2 d-flex gap-2">
+                    <button class="btn btn-primary-custom btn-sm flex-fill" @onclick="SearchAsync">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.099zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                        Buscar
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm flex-fill" @onclick="ClearFilterAsync">
+                        Limpar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            @if (_isLoading)
+            {
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary spinner-border-sm" role="status">
+                        <span class="visually-hidden">Carregando...</span>
+                    </div>
+                    <p class="text-muted small mt-2 mb-0">Carregando reservas...</p>
+                </div>
+            }
+            else if (!string.IsNullOrEmpty(_listError))
+            {
+                <div class="text-center py-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="#dee2e6" class="mb-3" viewBox="0 0 16 16">
+                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                    </svg>
+                    <p class="text-danger small mb-0">@_listError</p>
+                </div>
+            }
+            else if (_reservations.Count == 0)
+            {
+                <div class="text-center py-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="#dee2e6" class="mb-3" viewBox="0 0 16 16">
+                        <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+                        <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-5 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
+                    </svg>
+                    <p class="text-muted mb-1 fw-medium">Nenhuma reserva encontrada</p>
+                    <small class="text-muted">Ajuste os filtros ou cadastre uma nova reserva.</small>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0 reservations-table">
+                        <thead>
+                            <tr>
+                                <th class="ps-4">Nome</th>
+                                <th>Sala</th>
+                                <th>Responsável</th>
+                                <th>Participantes</th>
+                                <th>Início</th>
+                                <th class="text-end pe-4">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var reservation in _reservations)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="reservation-icon-badge">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16">
+                                                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+                                                    <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-5 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <div class="fw-medium">@reservation.Name</div>
+                                                @if (!string.IsNullOrWhiteSpace(reservation.Description))
+                                                {
+                                                    <div class="text-muted small reservation-description">@reservation.Description</div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted small">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                                                <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3A1.5 1.5 0 0 1 15 10.5v3A1.5 1.5 0 0 1 13.5 15h-3A1.5 1.5 0 0 1 9 13.5v-3z"/>
+                                            </svg>
+                                            @reservation.RoomName
+                                        </span>
+                                    </td>
+                                    <td class="text-muted small">@reservation.UserName</td>
+                                    <td>
+                                        <span class="capacity-badge">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="me-1" viewBox="0 0 16 16">
+                                                <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                                <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
+                                                <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
+                                            </svg>
+                                            @reservation.Participants
+                                        </span>
+                                    </td>
+                                    <td class="text-muted small">@reservation.InitialTime.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td class="text-end pe-4">
+                                        <button class="btn btn-icon btn-delete" title="Excluir reserva"
+                                                @onclick="() => ConfirmDelete(reservation)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+</div>
+
+<FormModal Model="@_newReservation"
+           Title="Nova Reserva"
+           SubmitLabel="Criar Reserva"
+           IsVisible="_showAddModal"
+           IsLoading="_isSaving"
+           ErrorMessage="@_modalError"
+           OnClose="CloseAddModal"
+           OnSubmit="HandleAddReservationAsync">
+    <Icon>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16">
+            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+            <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm-5 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
+        </svg>
+    </Icon>
+    <Fields>
+        <div class="mb-3">
+            <label class="form-label fw-medium">Nome da Reserva</label>
+            <InputText @bind-Value="_newReservation.Name"
+                       class="form-control py-2"
+                       placeholder="Ex: Reunião de Alinhamento" />
+            <ValidationMessage For="@(() => _newReservation.Name)" class="text-danger small" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-medium">Descrição</label>
+            <InputTextArea @bind-Value="_newReservation.Description"
+                           class="form-control py-2"
+                           rows="2"
+                           placeholder="Detalhes da reunião (opcional)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-medium">Sala</label>
+            <InputSelect @bind-Value="_newReservation.RoomId" class="form-select py-2">
+                <option value="">Selecione uma sala...</option>
+                @foreach (var room in _rooms)
+                {
+                    <option value="@room.Id">@room.Name — @room.Location</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => _newReservation.RoomId)" class="text-danger small" />
+        </div>
+
+        <div class="row g-2 mb-3">
+            <div class="col-12 col-md-6">
+                <label class="form-label fw-medium">Início</label>
+                <InputDate @bind-Value="_newReservation.InitialTime"
+                           Type="InputDateType.DateTimeLocal"
+                           class="form-control py-2" />
+                <ValidationMessage For="@(() => _newReservation.InitialTime)" class="text-danger small" />
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label fw-medium">Término</label>
+                <InputDate @bind-Value="_newReservation.EndTime"
+                           Type="InputDateType.DateTimeLocal"
+                           class="form-control py-2" />
+                <ValidationMessage For="@(() => _newReservation.EndTime)" class="text-danger small" />
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label fw-medium">Participantes</label>
+            <InputNumber @bind-Value="_newReservation.Participants"
+                         class="form-control py-2"
+                         placeholder="Número de participantes" />
+            <ValidationMessage For="@(() => _newReservation.Participants)" class="text-danger small" />
+        </div>
+    </Fields>
+</FormModal>
+
+@if (_showDeleteModal && _reservationToDelete is not null)
+{
+    <div class="modal-overlay" @onclick="CloseDeleteModal"></div>
+    <div class="modal-wrapper">
+        <div class="card border-0 shadow-lg modal-card modal-card--sm">
+            <div class="card-body px-4 py-4 text-center">
+                <div class="delete-icon-circle mx-auto mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="#dc3545" viewBox="0 0 16 16">
+                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                    </svg>
+                </div>
+                <h5 class="fw-semibold mb-1">Excluir reserva?</h5>
+                <p class="text-muted small mb-4">
+                    A reserva <strong>@_reservationToDelete.Name</strong> será removida permanentemente e não poderá ser recuperada.
+                </p>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary flex-fill py-2" @onclick="CloseDeleteModal">
+                        Cancelar
+                    </button>
+                    <button class="btn btn-danger flex-fill py-2 fw-semibold"
+                            @onclick="ExecuteDeleteAsync" disabled="@_isDeleting">
+                        @if (_isDeleting)
+                        {
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        }
+                        Excluir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<ResponseShortReservationJson> _reservations = [];
+    private List<ResponseShortRoomJson> _rooms = [];
+    private RequestFilterReservationsJson _filter = new();
+    private bool _isLoading;
+    private string _listError = string.Empty;
+
+    private bool _showAddModal;
+    private ReservationFormModel _newReservation = new();
+    private bool _isSaving;
+    private string _modalError = string.Empty;
+
+    private bool _showDeleteModal;
+    private ResponseShortReservationJson? _reservationToDelete;
+    private bool _isDeleting;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRoomsAsync();
+        await LoadReservationsAsync();
+    }
+
+    private async Task LoadRoomsAsync()
+        => _rooms = await RoomService.FilterRoomsAsync(new RequestFilterRoomsJson());
+
+    private async Task LoadReservationsAsync()
+    {
+        _isLoading = true;
+        _listError = string.Empty;
+
+        try
+        {
+            _reservations = await ReservationService.FilterReservationsAsync(_filter);
+        }
+        catch
+        {
+            _listError = "Não foi possível carregar as reservas. Tente novamente.";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task SearchAsync() => await LoadReservationsAsync();
+
+    private async Task ClearFilterAsync()
+    {
+        _filter = new();
+        await LoadReservationsAsync();
+    }
+
+    private void OpenAddModal()
+    {
+        _newReservation = new();
+        _modalError = string.Empty;
+        _showAddModal = true;
+    }
+
+    private void CloseAddModal() => _showAddModal = false;
+
+    private async Task HandleAddReservationAsync()
+    {
+        _isSaving = true;
+        _modalError = string.Empty;
+
+        try
+        {
+            var success = await ReservationService.CreateReservationAsync(new RequestReservationJson
+            {
+                Name = _newReservation.Name,
+                Description = _newReservation.Description,
+                InitialTime = _newReservation.InitialTime!.Value,
+                EndTime = _newReservation.EndTime!.Value,
+                Participants = _newReservation.Participants,
+                RoomId = _newReservation.RoomId!.Value
+            });
+
+            if (success)
+            {
+                _showAddModal = false;
+                await LoadReservationsAsync();
+            }
+            else
+            {
+                _modalError = "Não foi possível criar a reserva. Verifique os dados e tente novamente.";
+            }
+        }
+        catch
+        {
+            _modalError = "Erro ao conectar com o servidor. Tente novamente.";
+        }
+        finally
+        {
+            _isSaving = false;
+        }
+    }
+
+    private void ConfirmDelete(ResponseShortReservationJson reservation)
+    {
+        _reservationToDelete = reservation;
+        _showDeleteModal = true;
+    }
+
+    private void CloseDeleteModal()
+    {
+        _showDeleteModal = false;
+        _reservationToDelete = null;
+    }
+
+    private async Task ExecuteDeleteAsync()
+    {
+        if (_reservationToDelete is null) return;
+
+        _isDeleting = true;
+
+        try
+        {
+            var success = await ReservationService.DeleteReservationAsync(_reservationToDelete.Id);
+
+            if (success)
+            {
+                _showDeleteModal = false;
+                _reservationToDelete = null;
+                await LoadReservationsAsync();
+            }
+        }
+        catch { }
+        finally
+        {
+            _isDeleting = false;
+        }
+    }
+
+    private class ReservationFormModel
+    {
+        [Required(ErrorMessage = "Informe o nome da reserva")]
+        [MinLength(2, ErrorMessage = "O nome deve ter pelo menos 2 caracteres")]
+        public string Name { get; set; } = string.Empty;
+
+        public string Description { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Selecione uma sala")]
+        public long? RoomId { get; set; }
+
+        [Required(ErrorMessage = "Informe a data/hora de início")]
+        public DateTime? InitialTime { get; set; }
+
+        [Required(ErrorMessage = "Informe a data/hora de término")]
+        public DateTime? EndTime { get; set; }
+
+        [Range(1, 500, ErrorMessage = "Informe um número de participantes válido")]
+        public int Participants { get; set; }
+    }
+}

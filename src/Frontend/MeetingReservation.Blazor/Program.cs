@@ -28,5 +28,6 @@ builder.Services.AddScoped(sp =>
 });
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
+builder.Services.AddScoped<IReservationService, ReservationService>();
 
 await builder.Build().RunAsync();
